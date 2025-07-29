@@ -1585,12 +1585,14 @@
             const subtaskRow = document.createElement('tr');
             subtaskRow.className = 'task-row-expandable';
             const subtarefasHTML = tarefa.subtarefas.map(st => `
-                <div class="flex items-center gap-3 py-1">
-                    <input type="checkbox" data-tarefa-id="${tarefa.id}" data-subtarefa-id="${st.id}" class="subtarefa-checkbox-tabela" ${st.concluida ? 'checked' : ''}>
-                    <span class="${st.concluida ? 'subtarefa-concluida' : ''}">${st.texto}</span>
-                    ${st.lembreteData ? `<span class="text-xs text-accent-brown ml-auto"><i class="fa-regular fa-bell"></i> ${formatDate(st.lembreteData)}</span>` : ''}
-                </div>
-            `).join('');
+        <div class="subtarefa-item">
+            <div class="flex items-center gap-3 py-1">
+                <input type="checkbox" data-tarefa-id="${tarefa.id}" data-subtarefa-id="${st.id}" class="subtarefa-checkbox-tabela" ${st.concluida ? 'checked' : ''}>
+                <span class="${st.concluida ? 'subtarefa-concluida' : ''}">${st.texto}</span>
+                ${st.lembreteData ? `<span class="text-xs text-accent-brown ml-auto"><i class="fa-regular fa-bell"></i> ${formatDate(st.lembreteData)}</span>` : ''}
+            </div>
+        </div>
+    `).join('');
             subtaskRow.innerHTML = `<td colspan="9">
             <div class="subtask-wrapper">${subtarefasHTML}</div>
         </td>`;
