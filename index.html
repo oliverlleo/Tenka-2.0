@@ -554,7 +554,6 @@
                 <a href="#" id="nav-tasks" class="flex items-center px-4 py-3 rounded-lg nav-link">
                     <i class="fa-solid fa-list-check w-6 text-center"></i>
                     <span class="ml-3">Tarefas</span>
-                    <span id="alertas-badge" class="ml-auto bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
                 </a>
                 <a href="#" id="nav-cadastros" class="flex items-center px-4 py-3 rounded-lg nav-link">
                     <i class="fa-solid fa-address-book w-6 text-center"></i>
@@ -563,7 +562,7 @@
                 <a href="#" id="nav-alertas" class="flex items-center px-4 py-3 rounded-lg nav-link">
                     <i class="fa-solid fa-bell w-6 text-center"></i>
                     <span class="ml-3">Alertas</span>
-                    <span id="alertas-badge" class="ml-auto bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                    <span id="nav-alertas-badge" class="ml-auto bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
                 </a>
             </nav>
             <div class="p-6 mt-auto text-center">
@@ -1100,7 +1099,7 @@
     
     <!-- Modal Solicitacao -->
     <div id="modal-solicitacao" class="modal fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 invisible opacity-0 z-50">
-        <div class="modal-content rounded-lg shadow-xl w-full max-w-full md:max-w-5xl p-6 transform scale-95 content-card">
+        <div class="modal-content rounded-lg shadow-xl w-full max-w-full md:max-w-5xl p-6 transform scale-95 content-card max-h-screen overflow-y-auto scale-85">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl md:text-2xl font-medium" id="modal-solicitacao-title">Nova Solicitação de Compra</h3>
                 <button type="button" id="btn-fechar-modal-solicitacao" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
@@ -1118,29 +1117,29 @@
                     <div><label for="sol-prazo-entrega" class="block text-sm font-medium">Prazo de Entrega</label><input type="date" id="sol-prazo-entrega" class="mt-1 block w-full"></div>
                     <div><label for="sol-inicio-previsto" class="block text-sm font-medium">Início Previsto</label><input type="date" id="sol-inicio-previsto" class="mt-1 block w-full"></div>
                     <div><label for="sol-termino-previsto" class="block text-sm font-medium">Término Previsto</label><input type="date" id="sol-termino-previsto" class="mt-1 block w-full"></div>
-                    <div class="md:col-span-3 border-t border-border-color my-2"></div>
-
-<div>
-    <label class="flex items-center space-x-2 text-sm font-medium">
-        <input type="checkbox" id="sol-lembrete-entrega" class="h-4 w-4">
-        <span>Lembrar Prazo Entrega?</span>
-    </label>
-    <input type="number" id="sol-dias-lembrete-entrega" placeholder="Dias de antecedência" class="mt-1 block w-full text-sm">
-</div>
-<div>
-    <label class="flex items-center space-x-2 text-sm font-medium">
-        <input type="checkbox" id="sol-lembrete-inicio" class="h-4 w-4">
-        <span>Lembrar Início Previsto?</span>
-    </label>
-    <input type="number" id="sol-dias-lembrete-inicio" placeholder="Dias de antecedência" class="mt-1 block w-full text-sm">
-</div>
-<div>
-    <label class="flex items-center space-x-2 text-sm font-medium">
-        <input type="checkbox" id="sol-lembrete-termino" class="h-4 w-4">
-        <span>Lembrar Término Previsto?</span>
-    </label>
-    <input type="number" id="sol-dias-lembrete-termino" placeholder="Dias de antecedência" class="mt-1 block w-full text-sm">
-</div>
+                    <div class="md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4 border-t border-border-color pt-4 mt-2">
+                        <div>
+                            <label class="flex items-center space-x-2 text-sm font-medium">
+                                <input type="checkbox" id="sol-lembrete-entrega" class="h-4 w-4">
+                                <span>Lembrar Prazo Entrega?</span>
+                            </label>
+                            <input type="number" id="sol-dias-lembrete-entrega" placeholder="Dias de antecedência" class="mt-1 block w-full text-sm">
+                        </div>
+                        <div>
+                            <label class="flex items-center space-x-2 text-sm font-medium">
+                                <input type="checkbox" id="sol-lembrete-inicio" class="h-4 w-4">
+                                <span>Lembrar Início Previsto?</span>
+                            </label>
+                            <input type="number" id="sol-dias-lembrete-inicio" placeholder="Dias de antecedência" class="mt-1 block w-full text-sm">
+                        </div>
+                        <div>
+                            <label class="flex items-center space-x-2 text-sm font-medium">
+                                <input type="checkbox" id="sol-lembrete-termino" class="h-4 w-4">
+                                <span>Lembrar Término Previsto?</span>
+                            </label>
+                            <input type="number" id="sol-dias-lembrete-termino" placeholder="Dias de antecedência" class="mt-1 block w-full text-sm">
+                        </div>
+                    </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mb-4">
                     <div><label for="sol-descricao" class="block text-sm font-medium">Descrição</label><textarea id="sol-descricao" rows="3" class="mt-1 block w-full"></textarea></div>
@@ -2376,7 +2375,7 @@ const verificarEGerarAlertas = async () => {
 
 const renderAlertas = (alertas) => {
     const container = document.getElementById('lista-alertas');
-    const badge = document.getElementById('alertas-badge');
+    const badge = document.getElementById('nav-alertas-badge');
     if (!container || !badge) return;
 
     const unreadAlerts = alertas.filter(a => !a.lido);
@@ -2830,11 +2829,6 @@ const renderAlertas = (alertas) => {
 
         // --- EVENT LISTENERS (MODALS, NAV, TABS) ---
 
-        navLinks.alertas.addEventListener('click', (e) => {
-            e.preventDefault();
-            openModal('modal-alertas');
-        });
-
         document.addEventListener('click', async (e) => {
             const btnLido = e.target.closest('.btn-marcar-lido');
             if (btnLido) {
@@ -2982,8 +2976,7 @@ const renderAlertas = (alertas) => {
 
         const handleNavigation = (targetView) => {
             if (targetView === 'alertas') {
-                // Lógica para abrir o modal/dropdown de alertas
-                console.log("Abrir alertas");
+                openModal('modal-alertas');
                 return;
             }
 
