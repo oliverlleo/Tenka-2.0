@@ -1118,29 +1118,29 @@
                     <div><label for="sol-prazo-entrega" class="block text-sm font-medium">Prazo de Entrega</label><input type="date" id="sol-prazo-entrega" class="mt-1 block w-full"></div>
                     <div><label for="sol-inicio-previsto" class="block text-sm font-medium">Início Previsto</label><input type="date" id="sol-inicio-previsto" class="mt-1 block w-full"></div>
                     <div><label for="sol-termino-previsto" class="block text-sm font-medium">Término Previsto</label><input type="date" id="sol-termino-previsto" class="mt-1 block w-full"></div>
-                    <div class="md:col-span-3 border-t border-border-color my-2"></div>
-
-<div>
-    <label class="flex items-center space-x-2 text-sm font-medium">
-        <input type="checkbox" id="sol-lembrete-entrega" class="h-4 w-4">
-        <span>Lembrar Prazo Entrega?</span>
-    </label>
-    <input type="number" id="sol-dias-lembrete-entrega" placeholder="Dias de antecedência" class="mt-1 block w-full text-sm">
-</div>
-<div>
-    <label class="flex items-center space-x-2 text-sm font-medium">
-        <input type="checkbox" id="sol-lembrete-inicio" class="h-4 w-4">
-        <span>Lembrar Início Previsto?</span>
-    </label>
-    <input type="number" id="sol-dias-lembrete-inicio" placeholder="Dias de antecedência" class="mt-1 block w-full text-sm">
-</div>
-<div>
-    <label class="flex items-center space-x-2 text-sm font-medium">
-        <input type="checkbox" id="sol-lembrete-termino" class="h-4 w-4">
-        <span>Lembrar Término Previsto?</span>
-    </label>
-    <input type="number" id="sol-dias-lembrete-termino" placeholder="Dias de antecedência" class="mt-1 block w-full text-sm">
-</div>
+                    <div class="md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4 border-t border-border-color pt-4 mt-2">
+                        <div>
+                            <label class="flex items-center space-x-2 text-sm font-medium">
+                                <input type="checkbox" id="sol-lembrete-entrega" class="h-4 w-4">
+                                <span>Lembrar Prazo Entrega?</span>
+                            </label>
+                            <input type="number" id="sol-dias-lembrete-entrega" placeholder="Dias de antecedência" class="mt-1 block w-full text-sm">
+                        </div>
+                        <div>
+                            <label class="flex items-center space-x-2 text-sm font-medium">
+                                <input type="checkbox" id="sol-lembrete-inicio" class="h-4 w-4">
+                                <span>Lembrar Início Previsto?</span>
+                            </label>
+                            <input type="number" id="sol-dias-lembrete-inicio" placeholder="Dias de antecedência" class="mt-1 block w-full text-sm">
+                        </div>
+                        <div>
+                            <label class="flex items-center space-x-2 text-sm font-medium">
+                                <input type="checkbox" id="sol-lembrete-termino" class="h-4 w-4">
+                                <span>Lembrar Término Previsto?</span>
+                            </label>
+                            <input type="number" id="sol-dias-lembrete-termino" placeholder="Dias de antecedência" class="mt-1 block w-full text-sm">
+                        </div>
+                    </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mb-4">
                     <div><label for="sol-descricao" class="block text-sm font-medium">Descrição</label><textarea id="sol-descricao" rows="3" class="mt-1 block w-full"></textarea></div>
