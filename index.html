@@ -834,17 +834,20 @@
                             <p class="text-secondary text-sm md:text-base">Crie e organize as tarefas dos seus projetos.</p>
                         </div>
                         <div class="flex items-center space-x-4">
-                            <div class="isolate inline-flex rounded-md shadow-sm">
-                                <button type="button" id="btn-view-task-table" class="relative task-view-btn inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10 view-btn-active">
-                                    <i class="fa-solid fa-table-list"></i>
-                                </button>
-                                <button type="button" id="btn-view-task-kanban" class="relative task-view-btn -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
-                                    <i class="fa-solid fa-grip"></i>
-                                </button>
-                                <button type="button" id="btn-view-task-calendar" class="relative task-view-btn -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
-                                    <i class="fa-solid fa-calendar-days"></i>
-                                </button>
-                            </div>
+    <div class="isolate inline-flex rounded-md shadow-sm">
+        <button type="button" id="btn-view-task-table" class="relative task-view-btn inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10 view-btn-active">
+            <i class="fa-solid fa-table-list"></i>
+        </button>
+        <button type="button" id="btn-view-task-kanban" class="relative task-view-btn -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
+            <i class="fa-solid fa-grip"></i>
+        </button>
+        <button type="button" id="btn-view-task-client" class="relative task-view-btn -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
+            <i class="fa-solid fa-user-tag"></i>
+        </button>
+        <button type="button" id="btn-view-task-calendar" class="relative task-view-btn -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
+            <i class="fa-solid fa-calendar-days"></i>
+        </button>
+    </div>
                             <button id="btn-abrir-modal-tarefa" class="btn-primary inline-flex items-center px-4 py-2">
                                 <i class="fa-solid fa-plus mr-2"></i> Criar Tarefa
                             </button>
@@ -874,17 +877,17 @@
                             <div class="overflow-x-auto content-card">
                                 <table class="min-w-full">
                                     <thead>
-    <tr>
-        <th class="w-10"></th> <th>Tarefa</th>
-        <th>Descrição</th>
-        <th>Cliente</th>
-        <th>Colaborador</th>
-        <th>Fornecedor</th>
-        <th>Datas</th>
-        <th>Status</th>
-        <th>Ações</th>
-    </tr>
-</thead>
+        <tr>
+            <th class="w-10"></th>
+            <th>Tarefa</th>
+            <th>Cliente</th>
+            <th>Colaborador</th>
+            <th>Fornecedor</th>
+            <th>Datas</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
                                     <tbody id="tabela-tarefas"></tbody>
                                 </table>
                             </div>
@@ -910,6 +913,8 @@
                                 <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
                             </div>
                             <div id="task-cal-body" class="grid grid-cols-7 gap-1"></div>
+                        </div>
+                        <div id="tasks-client-view" class="hidden grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
                         </div>
                     </div>
                 </div>
@@ -1341,22 +1346,34 @@
             </div>
             
             <div class="content-card mt-4">
-                <h4 class="text-base md:text-lg font-semibold mb-2">Itens da Obra</h4>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full">
-                        <thead>
-                            <tr>
-                                <th class="px-2 py-2 text-left text-xs font-medium uppercase w-2/5">Item</th>
-                                <th class="px-2 py-2 text-left text-xs font-medium uppercase w-2/5">Datas</th>
-                                <th class="px-2 py-2 text-left text-xs font-medium uppercase">Valor</th>
-                                <th class="px-2 py-2 text-left text-xs font-medium uppercase">% Orçam.</th>
-                                <th class="px-2 py-2 text-left text-xs font-medium uppercase">Status</th>
-                                <th class="px-2 py-2 text-left text-xs font-medium uppercase">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabela-detalhes-cliente"></tbody>
-                    </table>
+                <div class="flex justify-between items-center mb-4">
+                    <h4 id="detalhes-view-title" class="text-base md:text-lg font-semibold">Itens da Obra</h4>
+                    <div class="isolate inline-flex rounded-md shadow-sm">
+                        <button type="button" id="btn-view-detalhes-itens" class="relative modal-view-btn inline-flex items-center rounded-l-md px-3 py-2 text-sm font-semibold focus:z-10 view-btn-active">Itens</button>
+                        <button type="button" id="btn-view-detalhes-tarefas" class="relative modal-view-btn -ml-px inline-flex items-center rounded-r-md px-3 py-2 text-sm font-semibold focus:z-10 bg-white text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">Tarefas</button>
+                    </div>
                 </div>
+
+                <div id="container-detalhes-itens">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                             <thead>
+                                <tr>
+                                    <th class="px-2 py-2 text-left text-xs font-medium uppercase w-2/5">Item</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium uppercase w-2/5">Datas</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium uppercase">Valor</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium uppercase">% Orçam.</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium uppercase">Status</th>
+                                    <th class="px-2 py-2 text-left text-xs font-medium uppercase">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabela-detalhes-cliente"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="container-detalhes-tarefas" class="hidden">
+                    </div>
             </div>
         </div>
     </div>
@@ -1490,6 +1507,8 @@
         let allAlertas = [];
         let expandedTaskRows = new Set();
         let expandedKanbanCards = new Set();
+        let expandedModalTaskRows = new Set();
+        let expandedModalKanbanCards = new Set();
         let clientModalCalendarState = { month: new Date().getMonth(), year: new Date().getFullYear(), clienteId: null };
         let dashboardCalendarState = { date: new Date(), view: 'weekly' };
         let taskCalendarState = { month: new Date().getMonth(), year: new Date().getFullYear() };
@@ -1561,6 +1580,12 @@
             modal.querySelector('.modal-content').classList.remove('scale-95');
         };
         const closeModal = (id) => {
+            // Limpa o estado de expansão do modal de detalhes quando ele é fechado
+            if (id === 'modal-detalhes-cliente') {
+                expandedModalTaskRows.clear();
+                expandedModalKanbanCards.clear();
+            }
+
             const modal = document.getElementById(id);
             modal.classList.add('opacity-0');
             modal.querySelector('.modal-content').classList.add('scale-95');
@@ -1589,6 +1614,225 @@
             });
         };
 
+        // Função para renderizar uma TABELA de tarefas em um container específico
+    const renderTaskTableInContainer = (tasks, containerEl) => {
+        const tbodyId = 'modal-task-table-body'; // ID único para o tbody do modal
+        containerEl.innerHTML = `
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr>
+                            <th class="w-10"></th>
+                            <th>Tarefa</th>
+                            <th>Colaborador</th>
+                            <th>Fornecedor</th>
+                            <th>Datas</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="${tbodyId}"></tbody>
+                </table>
+            </div>
+        `;
+
+        const tbody = document.getElementById(tbodyId);
+        if (tasks.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-secondary">Nenhuma tarefa encontrada para este cliente.</td></tr>`;
+            return;
+        }
+
+        tasks.forEach(tarefa => {
+            const hasSubtarefas = tarefa.subtarefas && tarefa.subtarefas.length > 0;
+            const colaborador = allColaboradores.find(c => c.id === tarefa.colaboradorId);
+            const fornecedor = allFornecedores.find(f => f.id === tarefa.fornecedorId);
+            const statusMap = { 'Pendente': { text: 'Pendente', color: 'bg-[var(--status-nao-iniciado-bg)] text-[var(--status-nao-iniciado-text)]' }, 'Em Andamento': { text: 'Em Andamento', color: 'bg-[var(--status-em-andamento-bg)] text-[var(--status-em-andamento-text)]' }, 'Finalizado': { text: 'Finalizado', color: 'bg-[var(--status-finalizado-bg)] text-[var(--status-finalizado-text)]' }, };
+            const statusInfo = statusMap[tarefa.status] || statusMap['Pendente'];
+            const descricaoTexto = (tarefa.descricao || '').replace(/<[^>]*>/g, '');
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    ${hasSubtarefas ? '<button class="expand-toggle text-accent-brown p-2"><i class="fa-solid fa-chevron-right expand-icon"></i></button>' : ''}
+                </td>
+                <td class="align-middle">
+                    <div class="font-medium text-primary truncate" title="${tarefa.titulo || ''}">${tarefa.titulo || 'Tarefa sem Título'}</div>
+                    <div class="text-sm text-secondary truncate" title="${descricaoTexto}">${descricaoTexto || 'Sem descrição'}</div>
+                </td>
+                <td class="text-sm text-secondary">${colaborador?.nome || 'N/A'}</td>
+                <td class="text-sm text-secondary">${fornecedor?.nome || 'N/A'}</td>
+                <td class="text-sm text-secondary">${formatDate(tarefa.dataInicio)} - ${formatDate(tarefa.dataFim)}</td>
+                <td><span class="status-badge ${statusInfo.color}">${statusInfo.text}</span></td>
+                <td class="text-right text-sm font-medium">
+                    <div class="flex items-center space-x-3 text-lg">
+                        ${tarefa.status === 'Pendente' ? `<button title="Iniciar Tarefa" data-id="${tarefa.id}" data-status="Em Andamento" class="btn-status-change-tarefa text-blue-600 hover:text-blue-800"><i class="fa-solid fa-play"></i></button>` : ''}
+                        ${tarefa.status === 'Em Andamento' ? `<button title="Finalizar Tarefa" data-id="${tarefa.id}" data-status="Finalizado" class="btn-status-change-tarefa text-green-600 hover:text-green-800"><i class="fa-solid fa-check-double"></i></button>` : ''}
+                        <button title="Editar Tarefa" data-id="${tarefa.id}" class="btn-edit-tarefa text-blue-600 hover:text-blue-800"><i class="fa-solid fa-edit"></i></button>
+                        <button title="Excluir Tarefa" data-id="${tarefa.id}" data-collection="tarefas" class="btn-delete-item text-gray-500 hover:text-red-600"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+
+            // A lógica de expandir subtarefas permanece a mesma...
+            if (hasSubtarefas) {
+                const subtaskRow = document.createElement('tr');
+                subtaskRow.className = 'task-row-expandable';
+                const subtarefasHTML = tarefa.subtarefas.map(st => `
+                    <div class="flex items-center justify-start gap-3 py-1 text-left">
+                        <input type="checkbox" data-tarefa-id="${tarefa.id}" data-subtarefa-id="${st.id}" class="subtarefa-checkbox-tabela" ${st.concluida ? 'checked' : ''}>
+                        <span class="${st.concluida ? 'subtarefa-concluida' : ''}">${st.texto}</span>
+                    </div>`).join('');
+                subtaskRow.innerHTML = `<td colspan="7"><div class="subtask-wrapper">${subtarefasHTML}</div></td>`;
+                tbody.appendChild(subtaskRow);
+                
+                if (expandedModalTaskRows.has(tarefa.id)) {
+                    subtaskRow.classList.add('visible');
+                    row.querySelector('.expand-icon').classList.add('rotated');
+                }
+
+                row.querySelector('.expand-toggle').addEventListener('click', (e) => {
+                    const icon = e.currentTarget.querySelector('.expand-icon');
+                    if (expandedModalTaskRows.has(tarefa.id)) {
+                        expandedModalTaskRows.delete(tarefa.id);
+                        icon.classList.remove('rotated');
+                        subtaskRow.classList.remove('visible');
+                    } else {
+                        expandedModalTaskRows.add(tarefa.id);
+                        icon.classList.add('rotated');
+                        subtaskRow.classList.add('visible');
+                    }
+                });
+            }
+        });
+    };
+
+    // Função para renderizar um KANBAN de tarefas em um container específico
+    const renderKanbanInContainer = (tasks, containerEl) => {
+        const columns = { 'Pendente': [], 'Em Andamento': [], 'Finalizado': [] };
+        tasks.forEach(task => {
+            if (columns[task.status]) columns[task.status].push(task);
+        });
+
+        const columnsHTML = Object.keys(columns).map(status => {
+            const cardsHTML = columns[status].map(tarefa => {
+                const hasSubtarefas = tarefa.subtarefas && tarefa.subtarefas.length > 0;
+                const isExpanded = expandedModalKanbanCards.has(tarefa.id);
+
+                const subtarefasHTML = hasSubtarefas ? `
+                    <div class="kanban-subtasks-container kanban-subtasks mt-3 pt-3 border-t border-border-color ${isExpanded ? '' : 'hidden'}">
+                       ${tarefa.subtarefas.map(st => `
+                           <div class="flex items-center gap-2 py-1">
+                               <input type="checkbox" id="modal-kanban-st-${st.id}" data-tarefa-id="${tarefa.id}" data-subtarefa-id="${st.id}" class="subtarefa-checkbox-kanban" ${st.concluida ? 'checked' : ''}>
+                               <label for="modal-kanban-st-${st.id}" class="text-sm cursor-pointer ${st.concluida ? 'subtarefa-concluida' : ''}">${st.texto}</label>
+                           </div>`).join('')}
+                    </div>` : '';
+                
+                return `
+                    <div class="kanban-card p-3 rounded-lg shadow-sm" draggable="true" data-id="${tarefa.id}">
+                        <div>
+                            <div class="flex justify-between items-start">
+                                <h3 class="font-lora font-semibold text-base text-primary pr-2">${tarefa.titulo}</h3>
+                                ${hasSubtarefas ? `<button class="kanban-expand-toggle text-accent-brown p-1"><i class="fa-solid fa-chevron-right expand-icon ${isExpanded ? 'rotated' : ''}"></i></button>` : ''}
+                            </div>
+                            <p class="text-sm text-secondary mt-1 truncate">${(tarefa.descricao || '').replace(/<[^>]*>/g, '')}</p>
+                        </div>
+                        ${subtarefasHTML}
+                        <div class="text-xs text-secondary mt-2 pt-2 border-t border-border-color">
+                            <span><i class="fa-solid fa-calendar-alt mr-1"></i> ${formatDate(tarefa.dataInicio)} - ${formatDate(tarefa.dataFim)}</span>
+                        </div>
+                    </div>`;
+            }).join('') || `<div class="text-center text-sm text-secondary py-4">Nenhuma tarefa.</div>`;
+            
+            return `
+                <div class="kanban-column p-4 space-y-4 flex-1" data-status="${status}">
+                    <h3 class="font-semibold text-lg text-primary">${status} <span class="text-sm text-secondary">(${columns[status].length})</span></h3>
+                    <div class="space-y-3 min-h-[100px]">${cardsHTML}</div>
+                </div>`;
+        }).join('');
+
+        containerEl.innerHTML = `<div class="flex gap-4 overflow-x-auto">${columnsHTML}</div>`;
+        
+        // A lógica para expandir subtarefas no Kanban permanece a mesma...
+        containerEl.querySelectorAll('.kanban-expand-toggle').forEach(button => {
+            // ... (código existente aqui)
+        });
+
+        // *** ADICIONAR ESTE BLOCO DE CÓDIGO PARA O DRAG-AND-DROP ***
+        containerEl.querySelectorAll('.kanban-card').forEach(card => {
+            card.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', e.target.closest('.kanban-card').dataset.id);
+                setTimeout(() => {
+                    e.target.closest('.kanban-card').classList.add('opacity-50');
+                }, 0);
+            });
+            card.addEventListener('dragend', (e) => {
+                e.target.closest('.kanban-card').classList.remove('opacity-50');
+            });
+        });
+
+        containerEl.querySelectorAll('.kanban-column').forEach(column => {
+            column.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                column.classList.add('drag-over');
+            });
+            column.addEventListener('dragleave', () => {
+                column.classList.remove('drag-over');
+            });
+            column.addEventListener('drop', async (e) => {
+                e.preventDefault();
+                column.classList.remove('drag-over');
+                const taskId = e.dataTransfer.getData('text/plain');
+                const newStatus = column.dataset.status;
+
+                // Atualiza o status no Firebase
+                try {
+                    await setDoc(doc(db, 'tarefas', taskId), { status: newStatus }, { merge: true });
+                } catch (error) {
+                    console.error("Erro ao atualizar status da tarefa via Kanban no modal:", error);
+                }
+            });
+        });
+    };
+
+    const renderDetalhesClienteTarefasView = (clienteId) => {
+        const container = document.getElementById('container-detalhes-tarefas');
+        container.innerHTML = `
+            <div class="flex justify-end mb-4">
+                 <div class="isolate inline-flex rounded-md shadow-sm">
+                    <button type="button" id="btn-task-view-table-modal" class="relative modal-task-view-btn inline-flex items-center rounded-l-md px-3 py-2 text-sm font-semibold focus:z-10 view-btn-active">Tabela</button>
+                    <button type="button" id="btn-task-view-kanban-modal" class="relative modal-task-view-btn -ml-px bg-white text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 inline-flex items-center rounded-r-md px-3 py-2 text-sm font-semibold focus:z-10">Kanban</button>
+                </div>
+            </div>
+            <div id="modal-task-content-container"></div>
+        `;
+
+        const tarefasDoCliente = allTarefas.filter(t => t.clienteId === clienteId);
+        const taskContentContainer = document.getElementById('modal-task-content-container');
+        
+        const renderContent = (view) => {
+            if (view === 'table') {
+                renderTaskTableInContainer(tarefasDoCliente, taskContentContainer);
+            } else if (view === 'kanban') {
+                renderKanbanInContainer(tarefasDoCliente, taskContentContainer);
+            }
+        };
+
+        // Renderização inicial
+        renderContent('table');
+
+        // Listeners do seletor aninhado
+        document.getElementById('btn-task-view-table-modal').addEventListener('click', (e) => {
+            document.querySelectorAll('.modal-task-view-btn').forEach(b => b.classList.remove('view-btn-active'));
+            e.currentTarget.classList.add('view-btn-active');
+            renderContent('table');
+        });
+        document.getElementById('btn-task-view-kanban-modal').addEventListener('click', (e) => {
+            document.querySelectorAll('.modal-task-view-btn').forEach(b => b.classList.remove('view-btn-active'));
+            e.currentTarget.classList.add('view-btn-active');
+            renderContent('kanban');
+        });
+    };
         const renderTabelaTarefas = () => {
     const tbody = document.getElementById('tabela-tarefas');
     if (!tbody) return;
@@ -1626,8 +1870,10 @@
             <td>
                 ${hasSubtarefas ? '<button class="expand-toggle text-accent-brown p-2"><i class="fa-solid fa-chevron-right expand-icon"></i></button>' : ''}
             </td>
-            <td class="font-medium text-primary">${tarefa.titulo || 'Tarefa sem Título'}</td>
-            <td class="max-w-xs truncate text-sm text-secondary" title="${descricaoTexto}">${descricaoTexto || 'Sem descrição'}</td>
+            <td class="align-middle">
+                <div class="font-medium text-primary truncate" title="${tarefa.titulo || ''}">${tarefa.titulo || 'Tarefa sem Título'}</div>
+                <div class="text-sm text-secondary truncate" title="${descricaoTexto}">${descricaoTexto || 'Sem descrição'}</div>
+            </td>
             <td class="text-sm text-secondary">${cliente?.nome || 'N/A'}</td>
             <td class="text-sm text-secondary">${colaborador?.nome || 'N/A'}</td>
             <td class="text-sm text-secondary">${fornecedor?.nome || 'N/A'}</td>
@@ -1814,6 +2060,13 @@
         });
         };
 
+    const styleSheet = document.createElement("style");
+    styleSheet.innerText = `
+        .subtasks-list-container.hidden { display: none; }
+        .expand-icon.rotated-up { transform: rotate(-90deg); }
+        .task-footer-tag { padding: 4px 10px; border-radius: 9999px; font-weight: 600; display: inline-flex; align-items: center; }
+    `;
+    document.head.appendChild(styleSheet);
         const renderTaskCalendarView = () => {
             const { month, year } = taskCalendarState;
             const calBody = document.getElementById('task-cal-body');
@@ -1867,6 +2120,137 @@
                 calBody.appendChild(dayCell);
             }
         };
+
+    const renderClientView = async () => {
+        const container = document.getElementById('tasks-client-view');
+        if (!container) return;
+        container.innerHTML = ''; // Limpa a view antes de renderizar
+
+        const statusPermitidos = ['Pendente', 'Em Andamento'];
+        const tarefasAtivas = allTarefas.filter(t => statusPermitidos.includes(t.status));
+        const clientesComTarefasAtivasIds = [...new Set(tarefasAtivas.map(t => t.clienteId))];
+
+        if (clientesComTarefasAtivasIds.length === 0) {
+            container.innerHTML = `<div class="text-center py-16 content-card">
+                <i class="fa-solid fa-check-circle text-5xl text-accent-green-dark mb-4"></i>
+                <h3 class="text-xl font-semibold text-primary">Tudo em ordem!</h3>
+                <p class="text-secondary">Nenhum cliente com tarefas pendentes ou em andamento.</p>
+            </div>`;
+            return;
+        }
+
+        const clientesFiltrados = allClientes
+            .filter(c => clientesComTarefasAtivasIds.includes(c.id))
+            .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+        clientesFiltrados.forEach(cliente => {
+            const tarefasDoCliente = tarefasAtivas.filter(t => t.clienteId === cliente.id);
+            const clienteModule = document.createElement('div');
+            clienteModule.className = 'client-module-card content-card';
+            clienteModule.dataset.clientId = cliente.id;
+            clienteModule.draggable = true;
+
+            const tarefasHTML = tarefasDoCliente.map(tarefa => {
+                const colaborador = allColaboradores.find(c => c.id === tarefa.colaboradorId);
+                const fornecedor = allFornecedores.find(f => f.id === tarefa.fornecedorId);
+                const hasSubtarefas = tarefa.subtarefas && tarefa.subtarefas.length > 0;
+                const descricaoTexto = (tarefa.descricao || '').replace(/<[^>]*>/g, '');
+                const subtarefasHTML = hasSubtarefas ? tarefa.subtarefas.map(st => `
+                    <div class="subtarefa-checklist-item flex items-center gap-3 py-1">
+                        <input type="checkbox" id="client-view-st-${st.id}" data-tarefa-id="${tarefa.id}" data-subtarefa-id="${st.id}" class="subtarefa-checkbox-kanban" ${st.concluida ? 'checked' : ''}>
+                        <label for="client-view-st-${st.id}" class="text-sm cursor-pointer ${st.concluida ? 'line-through text-secondary' : ''}">${st.texto}</label>
+                    </div>
+                `).join('') : '<p class="text-xs text-secondary">Nenhuma subtarefa.</p>';
+
+                return `
+                    <div class="task-card-item border-t border-border-color py-4" data-task-id="${tarefa.id}">
+                        <div class="flex justify-between items-start">
+                             <h2 class="text-xl font-lora font-semibold text-primary">${tarefa.titulo}</h2>
+                             ${hasSubtarefas ? `<button class="expand-subtasks-toggle text-accent-brown p-1 text-sm" data-target-id="subtasks-${tarefa.id}">
+                                <i class="fa-solid fa-chevron-down expand-icon"></i> <span class="toggle-text">Ocultar</span>
+                             </button>` : ''}
+                        </div>
+                        <p class="text-secondary mt-1 mb-3">${descricaoTexto}</p>
+
+                        <div id="subtasks-${tarefa.id}" class="subtasks-list-container bg-main p-3 rounded-lg border border-border-color space-y-1">
+                            ${subtarefasHTML}
+                        </div>
+
+                        <div class="task-footer-tags flex flex-wrap gap-2 mt-4 text-xs">
+                            ${fornecedor ? `<span class="task-footer-tag" style="background-color: ${generateColorFromString(fornecedor.nome)}; color: ${getTextColorForBg(generateColorFromString(fornecedor.nome))}"><i class="fa-solid fa-store mr-1.5"></i>${fornecedor.nome}</span>` : ''}
+                            ${colaborador ? `<span class="task-footer-tag" style="background-color: ${generateColorFromString(colaborador.nome)}; color: ${getTextColorForBg(generateColorFromString(colaborador.nome))}"><i class="fa-solid fa-user mr-1.5"></i>${colaborador.nome}</span>` : ''}
+                            <span class="task-footer-tag bg-gray-200 text-gray-700"><i class="fa-solid fa-calendar-alt mr-1.5"></i>${formatDate(tarefa.dataInicio)} - ${formatDate(tarefa.dataFim)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            clienteModule.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <h1 class="text-2xl md:text-3xl font-bold">${cliente.nome}</h1>
+                    <i class="fa-solid fa-grip-vertical text-border-color cursor-grab"></i>
+                </div>
+                ${tarefasHTML}
+            `;
+            container.appendChild(clienteModule);
+        });
+
+        // Event Listeners for new view
+        container.querySelectorAll('.expand-subtasks-toggle').forEach(button => {
+            button.addEventListener('click', () => {
+                const targetId = button.dataset.targetId;
+                const targetContainer = document.getElementById(targetId);
+                const icon = button.querySelector('.expand-icon');
+                const text = button.querySelector('.toggle-text');
+                targetContainer.classList.toggle('hidden');
+                icon.classList.toggle('rotated-up'); // you might need a new CSS class for this
+                text.textContent = targetContainer.classList.contains('hidden') ? 'Mostrar' : 'Ocultar';
+            });
+        });
+
+        // Drag and Drop Logic
+        let draggedItem = null;
+        container.querySelectorAll('.client-module-card').forEach(item => {
+            item.addEventListener('dragstart', () => {
+                draggedItem = item;
+                setTimeout(() => item.style.opacity = '0.5', 0);
+            });
+            item.addEventListener('dragend', () => {
+                setTimeout(() => {
+                    draggedItem.style.opacity = '1';
+                    draggedItem = null;
+                }, 0);
+            });
+            item.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+            item.addEventListener('drop', async (e) => {
+                e.preventDefault();
+                if (draggedItem && draggedItem !== item) {
+                    const allModules = Array.from(container.querySelectorAll('.client-module-card'));
+                    const draggedIndex = allModules.indexOf(draggedItem);
+                    const targetIndex = allModules.indexOf(item);
+
+                    // Reorder visually first for instant feedback
+                    if (draggedIndex < targetIndex) {
+                        container.insertBefore(draggedItem, item.nextSibling);
+                    } else {
+                        container.insertBefore(draggedItem, item);
+                    }
+
+                    // Now, update the order in Firestore
+                    const updatedOrder = Array.from(container.querySelectorAll('.client-module-card'));
+                    const batch = writeBatch(db);
+                    updatedOrder.forEach((module, index) => {
+                        const clientId = module.dataset.clientId;
+                        const docRef = doc(db, 'clientes', clientId);
+                        batch.update(docRef, { order: index });
+                    });
+                    await batch.commit();
+                }
+            });
+        });
+    };
 
         const renderTabelaCompras = () => {
             const tbody = document.getElementById('tabela-compras');
@@ -2321,6 +2705,40 @@
 
             renderWeeklyCalendar(clienteId);
             openModal('modal-detalhes-cliente');
+
+            // Adicionar ao final de openDetalhesClienteModal
+            const btnItens = document.getElementById('btn-view-detalhes-itens');
+            const btnTarefas = document.getElementById('btn-view-detalhes-tarefas');
+            const containerItens = document.getElementById('container-detalhes-itens');
+            const containerTarefas = document.getElementById('container-detalhes-tarefas');
+            const viewTitle = document.getElementById('detalhes-view-title');
+
+            // Estado inicial (reset)
+            btnItens.classList.add('view-btn-active');
+            btnTarefas.classList.remove('view-btn-active');
+            containerItens.classList.remove('hidden');
+            containerTarefas.classList.add('hidden');
+            viewTitle.textContent = 'Itens da Obra';
+
+
+            btnItens.addEventListener('click', () => {
+                btnItens.classList.add('view-btn-active');
+                btnTarefas.classList.remove('view-btn-active');
+                containerItens.classList.remove('hidden');
+                containerTarefas.classList.add('hidden');
+                viewTitle.textContent = 'Itens da Obra';
+            });
+
+            btnTarefas.addEventListener('click', () => {
+                btnTarefas.classList.add('view-btn-active');
+                btnItens.classList.remove('view-btn-active');
+                containerTarefas.classList.remove('hidden');
+                containerItens.classList.add('hidden');
+                viewTitle.textContent = 'Tarefas da Obra';
+                
+                // A função de renderização agora é chamada TODA VEZ, garantindo dados atualizados.
+                renderDetalhesClienteTarefasView(clienteId);
+            });
         }
         
         const renderViewResponsavel = (nomeResponsavel) => {
@@ -2847,6 +3265,7 @@ const renderSubtarefaInput = (subtarefa = {}) => {
                 } else {
                     clienteData.os = `OS-${Date.now().toString().slice(-6)}`;
                     clienteData.createdAt = new Date();
+                    clienteData.order = Date.now(); // <-- ADICIONAR ESTA LINHA
                     await addDoc(clientesCol, clienteData);
                 }
                 e.target.reset();
@@ -3372,11 +3791,13 @@ document.getElementById('subtarefas-container').addEventListener('click', e => {
         const taskViewBtns = {
             table: document.getElementById('btn-view-task-table'),
             kanban: document.getElementById('btn-view-task-kanban'),
+            client: document.getElementById('btn-view-task-client'), // <-- ADICIONAR
             calendar: document.getElementById('btn-view-task-calendar')
         };
         const taskViews = {
             table: document.getElementById('tasks-table-view'),
             kanban: document.getElementById('tasks-kanban-view'),
+            client: document.getElementById('tasks-client-view'), // <-- ADICIONAR
             calendar: document.getElementById('tasks-calendar-view')
         };
 
@@ -3720,6 +4141,7 @@ document.getElementById('subtarefas-container').addEventListener('click', e => {
                 renderTabelaClientes();
                 renderControleClientes();
                 renderDashboardCalendar();
+                renderClientView(); // <-- ADICIONAR CHAMADA
                 if (nomeResponsavel) renderViewResponsavel(nomeResponsavel);
             });
 
@@ -3749,7 +4171,20 @@ document.getElementById('subtarefas-container').addEventListener('click', e => {
                 renderTabelaTarefas();
                 renderKanbanView();
                 renderTaskCalendarView();
+                renderClientView();
                 verificarEGerarAlertas();
+
+                // *** ESTE É O CÓDIGO QUE RESOLVE O PROBLEMA DA ATUALIZAÇÃO IMEDIATA ***
+                // VERIFICA SE O MODAL DE DETALHES ESTÁ ABERTO E O ATUALIZA
+                const modalDetalhes = document.getElementById('modal-detalhes-cliente');
+                if (modalDetalhes && !modalDetalhes.classList.contains('invisible') && clientModalCalendarState.clienteId) {
+                    const containerTarefas = document.getElementById('container-detalhes-tarefas');
+                    // Se a aba de tarefas estiver ativa dentro do modal, redesenha seu conteúdo
+                    if (containerTarefas && !containerTarefas.classList.contains('hidden')) {
+                        renderDetalhesClienteTarefasView(clientModalCalendarState.clienteId);
+                    }
+                }
+                // *** FIM DO BLOCO DE CÓDIGO ***
             });
 
             onSnapshot(query(alertasCol), (snapshot) => {
