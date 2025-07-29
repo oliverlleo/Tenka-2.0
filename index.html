@@ -554,7 +554,6 @@
                 <a href="#" id="nav-tasks" class="flex items-center px-4 py-3 rounded-lg nav-link">
                     <i class="fa-solid fa-list-check w-6 text-center"></i>
                     <span class="ml-3">Tarefas</span>
-                    <span id="alertas-badge" class="ml-auto bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
                 </a>
                 <a href="#" id="nav-cadastros" class="flex items-center px-4 py-3 rounded-lg nav-link">
                     <i class="fa-solid fa-address-book w-6 text-center"></i>
@@ -563,7 +562,7 @@
                 <a href="#" id="nav-alertas" class="flex items-center px-4 py-3 rounded-lg nav-link">
                     <i class="fa-solid fa-bell w-6 text-center"></i>
                     <span class="ml-3">Alertas</span>
-                    <span id="alertas-badge" class="ml-auto bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+                    <span id="nav-alertas-badge" class="ml-auto bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
                 </a>
             </nav>
             <div class="p-6 mt-auto text-center">
@@ -2376,7 +2375,7 @@ const verificarEGerarAlertas = async () => {
 
 const renderAlertas = (alertas) => {
     const container = document.getElementById('lista-alertas');
-    const badge = document.getElementById('alertas-badge');
+    const badge = document.getElementById('nav-alertas-badge');
     if (!container || !badge) return;
 
     const unreadAlerts = alertas.filter(a => !a.lido);
