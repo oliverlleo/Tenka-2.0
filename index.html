@@ -562,6 +562,7 @@
                 <a href="#" id="nav-alertas" class="flex items-center px-4 py-3 rounded-lg nav-link">
                     <i class="fa-solid fa-bell w-6 text-center"></i>
                     <span class="ml-3">Alertas</span>
+                    <span id="alertas-badge" class="ml-auto bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
                 </a>
             </nav>
             <div class="p-6 mt-auto text-center">
@@ -992,9 +993,17 @@
                     <select id="tarefa-colaborador"><option value="">Atribuir a um Colaborador</option></select>
                     <input type="date" id="tarefa-data-inicio" required>
                     <input type="date" id="tarefa-data-fim" required>
-                    <div class="flex items-center">
-                        <input type="checkbox" id="tarefa-lembrete" class="h-4 w-4">
-                        <label for="tarefa-lembrete" class="ml-2">Lembrar (enviar notificação)</label>
+                </div>
+                <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-border-color pt-4">
+                    <div>
+                        <label class="flex items-center space-x-2 text-sm font-medium">
+                            <input type="checkbox" id="tarefa-lembrete" class="h-4 w-4">
+                            <span>Ativar Lembretes para Tarefa?</span>
+                        </label>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="number" id="tarefa-dias-lembrete-inicio" placeholder="Dias p/ início" class="text-sm">
+                        <input type="number" id="tarefa-dias-lembrete-fim" placeholder="Dias p/ fim" class="text-sm">
                     </div>
                 </div>
                 <div class="mt-6 flex justify-between items-center">
@@ -1113,6 +1122,29 @@
                     <div><label for="sol-descricao" class="block text-sm font-medium">Descrição</label><textarea id="sol-descricao" rows="3" class="mt-1 block w-full"></textarea></div>
                     <div><label for="sol-observacoes" class="block text-sm font-medium">Observações</label><textarea id="sol-observacoes" rows="3" class="mt-1 block w-full"></textarea></div>
                 </div>
+                <div class="md:col-span-3 border-t border-border-color my-2"></div>
+
+                <div>
+                    <label class="flex items-center space-x-2 text-sm font-medium">
+                        <input type="checkbox" id="sol-lembrete-entrega" class="h-4 w-4">
+                        <span>Lembrar Prazo Entrega?</span>
+                    </label>
+                    <input type="number" id="sol-dias-lembrete-entrega" placeholder="Dias de antecedência" class="mt-1 block w-full text-sm">
+                </div>
+                <div>
+                    <label class="flex items-center space-x-2 text-sm font-medium">
+                        <input type="checkbox" id="sol-lembrete-inicio" class="h-4 w-4">
+                        <span>Lembrar Início Previsto?</span>
+                    </label>
+                    <input type="number" id="sol-dias-lembrete-inicio" placeholder="Dias de antecedência" class="mt-1 block w-full text-sm">
+                </div>
+                <div>
+                    <label class="flex items-center space-x-2 text-sm font-medium">
+                        <input type="checkbox" id="sol-lembrete-termino" class="h-4 w-4">
+                        <span>Lembrar Término Previsto?</span>
+                    </label>
+                    <input type="number" id="sol-dias-lembrete-termino" placeholder="Dias de antecedência" class="mt-1 block w-full text-sm">
+                </div>
                 <div id="orcamento-info" class="text-sm p-3 rounded-md hidden mb-4">
                     <div class="flex justify-between items-center">
                         <div>
@@ -1204,6 +1236,21 @@
                 <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
             </div>
             <div id="cal-body" class="grid grid-cols-7 gap-1 flex-grow overflow-y-auto"></div>
+        </div>
+    </div>
+
+    <!-- Modal Alertas -->
+    <div id="modal-alertas" class="modal fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 invisible opacity-0 z-50">
+        <div class="modal-content rounded-lg shadow-xl w-full max-w-2xl p-6 transform scale-95 content-card flex flex-col h-[70vh]">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl md:text-2xl font-medium flex items-center"><i class="fa-solid fa-bell mr-3 text-amber-500"></i>Alertas e Notificações</h3>
+                <button type="button" id="btn-fechar-modal-alertas" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+            </div>
+            <div id="lista-alertas" class="flex-grow overflow-y-auto pr-2 space-y-3">
+                </div>
+            <div class="mt-4 pt-4 border-t border-border-color text-right">
+                 <button id="btn-limpar-alertas" class="btn-secondary py-2 px-4 text-sm">Marcar todos como lidos</button>
+            </div>
         </div>
     </div>
 
@@ -1352,7 +1399,7 @@
 
 
         // --- MODAL CONTROLLERS ---
-        const modals = ['modal-cliente', 'modal-fornecedor', 'modal-categoria', 'modal-detalhes-cliente', 'modal-calendario-mensal', 'modal-solicitacao', 'confirmation-modal', 'modal-tarefa', 'modal-colaborador'];
+        const modals = ['modal-cliente', 'modal-fornecedor', 'modal-categoria', 'modal-detalhes-cliente', 'modal-calendario-mensal', 'modal-solicitacao', 'confirmation-modal', 'modal-tarefa', 'modal-colaborador', 'modal-alertas'];
         const openModal = (id) => {
             const modal = document.getElementById(id);
             modal.classList.remove('invisible', 'opacity-0');
@@ -2358,6 +2405,120 @@
         };
 
 
+        // --- ALERT SYSTEM FUNCTIONS ---
+
+        const verificarEGerarAlertas = async () => {
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0); // Normaliza para o início do dia
+
+            const q = query(alertasCol, where("lido", "==", false));
+            const currentAlertsSnapshot = await getDocs(q);
+            const existingAlerts = currentAlertsSnapshot.docs.map(doc => doc.data().refId + "_" + doc.data().tipo);
+
+            const batch = writeBatch(db);
+
+            const criarAlertaSeNecessario = (item, tipo, dataEvento, diasAntecedencia) => {
+                if (!dataEvento || !diasAntecedencia || diasAntecedencia <= 0) return;
+
+                const dataEventoDate = new Date(dataEvento + 'T00:00:00');
+                const dataAlerta = new Date(dataEventoDate);
+                dataAlerta.setDate(dataAlerta.getDate() - diasAntecedencia);
+
+                if (hoje >= dataAlerta) {
+                    const alertId = item.id + "_" + tipo;
+                    if (!existingAlerts.includes(alertId)) {
+                        const cliente = allClientes.find(c => c.id === item.clienteId);
+                        const tituloMap = {
+                            'compra-entrega': 'Prazo de Entrega Próximo',
+                            'compra-inicio': 'Início de Serviço Próximo',
+                            'compra-termino': 'Término de Serviço Próximo',
+                            'tarefa-inicio': 'Início de Tarefa Próximo',
+                            'tarefa-fim': 'Fim de Tarefa Próximo',
+                        };
+                        const msgMap = {
+                            'compra-entrega': `O item "${item.servico}" para o cliente "${cliente?.nome}" tem entrega prevista para ${formatDate(dataEvento)}.`,
+                            'compra-inicio': `O serviço "${item.servico}" para o cliente "${cliente?.nome}" está previsto para iniciar em ${formatDate(dataEvento)}.`,
+                            'compra-termino': `O serviço "${item.servico}" para o cliente "${cliente?.nome}" está previsto para terminar em ${formatDate(dataEvento)}.`,
+                            'tarefa-inicio': `A tarefa "${item.descricao}" para "${cliente?.nome}" deve iniciar em ${formatDate(dataEvento)}.`,
+                            'tarefa-fim': `A tarefa "${item.descricao}" para "${cliente?.nome}" deve terminar em ${formatDate(dataEvento)}.`,
+                        };
+
+                        const newAlertRef = doc(collection(db, 'alertas'));
+                        batch.set(newAlertRef, {
+                            refId: item.id,
+                            tipo: tipo,
+                            titulo: tituloMap[tipo],
+                            mensagem: msgMap[tipo],
+                            dataAlerta: hoje,
+                            dataEvento: dataEventoDate,
+                            lido: false,
+                            clienteNome: cliente?.nome || 'N/A',
+                            responsavel: item.responsavel || item.colaboradorId || 'N/A',
+                            createdAt: new Date(),
+                        });
+                    }
+                }
+            };
+
+            allCompras.forEach(compra => {
+                if (compra.status !== 'finalizado') {
+                    if (compra.lembreteEntrega) criarAlertaSeNecessario(compra, 'compra-entrega', compra.prazoEntrega, compra.diasLembreteEntrega);
+                    if (compra.lembreteInicio) criarAlertaSeNecessario(compra, 'compra-inicio', compra.inicioPrevisto, compra.diasLembreteInicio);
+                    if (compra.lembreteTermino) criarAlertaSeNecessario(compra, 'compra-termino', compra.terminoPrevisto, compra.diasLembreteTermino);
+                }
+            });
+
+            allTarefas.forEach(tarefa => {
+                if (tarefa.status !== 'Finalizado' && tarefa.lembrete) {
+                    criarAlertaSeNecessario(tarefa, 'tarefa-inicio', tarefa.dataInicio, tarefa.diasLembreteInicio);
+                    criarAlertaSeNecessario(tarefa, 'tarefa-fim', tarefa.dataFim, tarefa.diasLembreteFim);
+                }
+            });
+
+            await batch.commit();
+        };
+
+
+        const renderAlertas = (alertas) => {
+            const container = document.getElementById('lista-alertas');
+            const badge = document.getElementById('alertas-badge');
+            if (!container || !badge) return;
+
+            const unreadAlerts = alertas.filter(a => !a.lido);
+
+            if (unreadAlerts.length > 0) {
+                badge.textContent = unreadAlerts.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            container.innerHTML = '';
+            if (unreadAlerts.length === 0) {
+                container.innerHTML = `<div class="text-center py-10 text-secondary">
+                    <i class="fa-solid fa-check-circle text-4xl text-green-500 mb-4"></i>
+                    <p>Nenhum alerta novo. Você está em dia!</p>
+                </div>`;
+                return;
+            }
+
+            unreadAlerts.sort((a,b) => b.createdAt.toDate() - a.createdAt.toDate()).forEach(alerta => {
+                const div = document.createElement('div');
+                div.className = 'p-4 rounded-lg border flex items-start gap-4';
+                div.style.borderColor = 'var(--accent-brown)';
+                div.innerHTML = `
+                    <div><i class="fa-solid fa-circle-info text-xl text-accent-brown mt-1"></i></div>
+                    <div class="flex-grow">
+                        <p class="font-bold text-primary">${alerta.titulo}</p>
+                        <p class="text-sm text-secondary">${alerta.mensagem}</p>
+                        <p class="text-xs text-gray-400 mt-1">${alerta.createdAt.toDate().toLocaleDateString('pt-BR')}</p>
+                    </div>
+                    <button data-id="${alerta.id}" class="btn-marcar-lido text-gray-400 hover:text-green-600 text-xl" title="Marcar como lido">&check;</button>
+                `;
+                container.appendChild(div);
+            });
+        };
+
         // --- FIRESTORE OPERATIONS ---
 
         document.getElementById('form-tarefa').addEventListener('submit', async (e) => {
@@ -2372,6 +2533,8 @@
                 dataInicio: document.getElementById('tarefa-data-inicio').value,
                 dataFim: document.getElementById('tarefa-data-fim').value,
                 lembrete: document.getElementById('tarefa-lembrete').checked,
+                diasLembreteInicio: parseInt(document.getElementById('tarefa-dias-lembrete-inicio').value) || 0,
+                diasLembreteFim: parseInt(document.getElementById('tarefa-dias-lembrete-fim').value) || 0,
                 status: 'Pendente' // Default status
             };
 
@@ -2502,6 +2665,12 @@
                 terminoPrevisto: document.getElementById('sol-termino-previsto').value,
                 descricao: document.getElementById('sol-descricao').value,
                 observacoes: document.getElementById('sol-observacoes').value,
+                lembreteEntrega: document.getElementById('sol-lembrete-entrega').checked,
+                diasLembreteEntrega: parseInt(document.getElementById('sol-dias-lembrete-entrega').value) || 0,
+                lembreteInicio: document.getElementById('sol-lembrete-inicio').checked,
+                diasLembreteInicio: parseInt(document.getElementById('sol-dias-lembrete-inicio').value) || 0,
+                lembreteTermino: document.getElementById('sol-lembrete-termino').checked,
+                diasLembreteTermino: parseInt(document.getElementById('sol-dias-lembrete-termino').value) || 0,
             };
 
             try {
@@ -2638,6 +2807,8 @@
                     document.getElementById('tarefa-data-inicio').value = tarefaToEdit.dataInicio;
                     document.getElementById('tarefa-data-fim').value = tarefaToEdit.dataFim;
                     document.getElementById('tarefa-lembrete').checked = tarefaToEdit.lembrete;
+                    document.getElementById('tarefa-dias-lembrete-inicio').value = tarefaToEdit.diasLembreteInicio || '';
+                    document.getElementById('tarefa-dias-lembrete-fim').value = tarefaToEdit.diasLembreteFim || '';
                     document.getElementById('modal-tarefa-title').textContent = 'Editar Tarefa';
                     openModal('modal-tarefa');
                 }
@@ -2710,6 +2881,12 @@
                     document.getElementById('sol-termino-previsto').value = compraToEdit.terminoPrevisto || '';
                     document.getElementById('sol-descricao').value = compraToEdit.descricao || '';
                     document.getElementById('sol-observacoes').value = compraToEdit.observacoes || '';
+                    document.getElementById('sol-lembrete-entrega').checked = compraToEdit.lembreteEntrega || false;
+                    document.getElementById('sol-dias-lembrete-entrega').value = compraToEdit.diasLembreteEntrega || '';
+                    document.getElementById('sol-lembrete-inicio').checked = compraToEdit.lembreteInicio || false;
+                    document.getElementById('sol-dias-lembrete-inicio').value = compraToEdit.diasLembreteInicio || '';
+                    document.getElementById('sol-lembrete-termino').checked = compraToEdit.lembreteTermino || false;
+                    document.getElementById('sol-dias-lembrete-termino').value = compraToEdit.diasLembreteTermino || '';
                     document.getElementById('modal-solicitacao-title').textContent = 'Editar Solicitação de Compra';
                     updateOrcamentoInfo(); // Update budget info for edit form
                     openModal('modal-solicitacao');
@@ -3164,8 +3341,38 @@
         });
 
 
+        // --- EVENT LISTENERS (MODALS, NAV, TABS) ---
+        navLinks.alertas.addEventListener('click', (e) => {
+            e.preventDefault();
+            openModal('modal-alertas');
+        });
+
+        document.addEventListener('click', async (e) => {
+            const btnLido = e.target.closest('.btn-marcar-lido');
+            if (btnLido) {
+                const id = btnLido.dataset.id;
+                await setDoc(doc(db, 'alertas', id), { lido: true }, { merge: true });
+            }
+        });
+
+        document.getElementById('btn-limpar-alertas').addEventListener('click', async () => {
+            const batch = writeBatch(db);
+            allAlertas.forEach(alerta => {
+                if (!alerta.lido) {
+                    const docRef = doc(db, 'alertas', alerta.id);
+                    batch.update(docRef, { lido: true });
+                }
+            });
+            await batch.commit();
+        });
+
+
         // --- INITIALIZATION & REALTIME LISTENERS ---
         const startApp = () => {
+            onSnapshot(query(alertasCol), (snapshot) => {
+                allAlertas = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderAlertas(allAlertas);
+            });
             const urlParams = new URLSearchParams(window.location.search);
             const nomeResponsavel = urlParams.get('responsavel');
             
@@ -3214,6 +3421,7 @@
                 renderTabelaTarefas();
                 renderKanbanView();
                 renderTaskCalendarView();
+                verificarEGerarAlertas();
             });
 
 
@@ -3228,6 +3436,7 @@
                 renderControleClientes();
                 renderDashboardCalendar();
                 if (nomeResponsavel) renderViewResponsavel(nomeResponsavel);
+                verificarEGerarAlertas();
 
                 // Re-render client details modal if it's open
                 const modalDetalhesCliente = document.getElementById('modal-detalhes-cliente');
