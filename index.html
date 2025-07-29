@@ -527,6 +527,33 @@
             color: white;
             border-color: var(--accent-green-dark);
         }
+
+/* --- ESTILOS PARA EDITOR E SUBTAREFAS --- */
+.toolbar-btn {
+    width: 30px; height: 30px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+.toolbar-btn:hover { background-color: var(--border-color); }
+.toolbar-color-picker { width: 30px; height: 30px; border: none; background: none; cursor: pointer; padding: 2px; }
+
+#tarefa-descricao:focus {
+    border-color: var(--accent-brown);
+    box-shadow: 0 0 0 3px rgba(138, 90, 68, 0.3);
+}
+
+.subtarefa-item { display: flex; align-items: center; gap: 0.75rem; }
+.subtarefa-item input[type="text"] { flex-grow: 1; }
+.subtarefa-item input[type="date"] { width: auto; }
+.subtarefa-item .subtarefa-concluida { text-decoration: line-through; color: var(--text-secondary); }
+
+.task-row-expandable { display: none; }
+.task-row-expandable.visible { display: table-row; }
+.task-row-expandable td { background-color: #f4f1e8; padding-left: 5rem !important; }
+
+.expand-icon { transition: transform 0.3s ease; }
+.expand-icon.rotated { transform: rotate(90deg); }
     </style>
 </head>
 <body class="bg-main">
@@ -762,9 +789,11 @@
                                 <table class="min-w-full">
                                     <thead>
                                         <tr>
-                                            <th>Tarefa</th>
+                                        <th class="w-10"></th> <th>Tarefa</th>
+                                        <th>Descrição</th>
                                             <th>Cliente</th>
                                             <th>Colaborador</th>
+                                        <th>Fornecedor</th>
                                             <th>Datas</th>
                                             <th>Status</th>
                                             <th>Ações</th>
@@ -984,36 +1013,43 @@
         <div class="modal-content rounded-lg shadow-xl w-full max-w-2xl p-6 transform scale-95 content-card">
             <h3 class="text-xl md:text-2xl font-medium mb-4" id="modal-tarefa-title">Criar Nova Tarefa</h3>
             <form id="form-tarefa">
-                <input type="hidden" id="tarefa-id">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <select id="tarefa-cliente" required><option value="">Selecione o Cliente</option></select>
-                    <select id="tarefa-servico"><option value="">Selecione o Serviço/Produto</option></select>
-                    <textarea id="tarefa-descricao" placeholder="Descrição da Tarefa" rows="3" class="md:col-span-2"></textarea>
-                    <select id="tarefa-fornecedor"><option value="">Selecione o Fornecedor</option></select>
-                    <select id="tarefa-colaborador"><option value="">Atribuir a um Colaborador</option></select>
-                    <input type="date" id="tarefa-data-inicio" required>
-                    <input type="date" id="tarefa-data-fim" required>
-                    <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-border-color pt-4">
-    <div>
-        <label class="flex items-center space-x-2 text-sm font-medium">
-            <input type="checkbox" id="tarefa-lembrete" class="h-4 w-4">
-            <span>Ativar Lembretes para Tarefa?</span>
-        </label>
+    <input type="hidden" id="tarefa-id">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="md:col-span-2">
+            <label for="tarefa-titulo" class="block text-sm font-medium text-secondary">Título da Tarefa*</label>
+            <input type="text" id="tarefa-titulo" placeholder="Ex: Instalar bancada da cozinha" required class="mt-1">
+        </div>
+
+        <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-secondary">Descrição e Subtarefas</label>
+            <div id="editor-toolbar" class="flex items-center space-x-2 p-2 bg-main border border-b-0 border-border-color rounded-t-lg">
+                <button type="button" class="toolbar-btn" data-command="bold"><i class="fa-solid fa-bold"></i></button>
+                <button type="button" class="toolbar-btn" data-command="italic"><i class="fa-solid fa-italic"></i></button>
+                <button type="button" class="toolbar-btn" data-command="underline"><i class="fa-solid fa-underline"></i></button>
+                <input type="color" id="editor-font-color" class="toolbar-color-picker" title="Cor do texto">
+            </div>
+            <div id="tarefa-descricao" contenteditable="true" class="h-24 p-2 border border-border-color overflow-y-auto" style="border-radius: 0 0 12px 4px;"></div>
+        </div>
+
+        <div id="subtarefas-container" class="md:col-span-2 space-y-2">
+            </div>
+        <div class="md:col-span-2">
+            <button type="button" id="btn-add-subtarefa" class="btn-secondary py-1 px-3 text-sm">
+                <i class="fa-solid fa-plus mr-1"></i> Adicionar Subtarefa
+            </button>
+        </div>
+
+        <select id="tarefa-cliente" required><option value="">Selecione o Cliente</option></select>
+        <select id="tarefa-servico"><option value="">Selecione o Serviço/Produto</option></select>
+        <select id="tarefa-fornecedor"><option value="">Selecione o Fornecedor</option></select>
+        <select id="tarefa-colaborador"><option value="">Atribuir a um Colaborador</option></select>
+        <input type="date" id="tarefa-data-inicio" required>
+        <input type="date" id="tarefa-data-fim" required>
+
+        <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-border-color pt-4">
+            </div>
     </div>
-    <div class="grid grid-cols-2 gap-2">
-        <input type="number" id="tarefa-dias-lembrete-inicio" placeholder="Dias p/ início" class="text-sm">
-        <input type="number" id="tarefa-dias-lembrete-fim" placeholder="Dias p/ fim" class="text-sm">
-    </div>
-</div>
-                </div>
-                <div class="mt-6 flex justify-between items-center">
-                    <button type="button" id="btn-salvar-modelo-tarefa" class="btn-secondary py-2 px-4 text-sm">Salvar como Modelo</button>
-                    <div class="flex space-x-3">
-                        <button type="button" id="btn-fechar-modal-tarefa" class="btn-secondary py-2 px-4">Cancelar</button>
-                        <button type="submit" class="btn-primary py-2 px-4">Salvar Tarefa</button>
-                    </div>
-                </div>
-            </form>
+    </form>
         </div>
     </div>
     
@@ -1452,14 +1488,13 @@
             if (!tbody) return;
             tbody.innerHTML = '';
 
-            // Get filter values
             const filtroGeral = document.getElementById('filtro-tarefa-geral').value.toLowerCase();
             const filtroCliente = document.getElementById('filtro-tarefa-cliente').value;
             const filtroColaborador = document.getElementById('filtro-tarefa-colaborador').value;
             const filtroStatus = document.getElementById('filtro-tarefa-status').value;
 
             const filteredTarefas = allTarefas.filter(tarefa => {
-                const matchGeral = !filtroGeral || (tarefa.descricao && tarefa.descricao.toLowerCase().includes(filtroGeral));
+                const matchGeral = !filtroGeral || (tarefa.titulo && tarefa.titulo.toLowerCase().includes(filtroGeral)) || (tarefa.descricao && tarefa.descricao.toLowerCase().includes(filtroGeral));
                 const matchCliente = !filtroCliente || tarefa.clienteId === filtroCliente;
                 const matchColaborador = !filtroColaborador || tarefa.colaboradorId === filtroColaborador;
                 const matchStatus = !filtroStatus || tarefa.status === filtroStatus;
@@ -1467,30 +1502,34 @@
             });
 
             if (filteredTarefas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-secondary">Nenhuma tarefa encontrada.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="9" class="text-center py-8 text-secondary">Nenhuma tarefa encontrada.</td></tr>`;
                 return;
             }
 
             filteredTarefas.forEach(tarefa => {
                 const cliente = allClientes.find(c => c.id === tarefa.clienteId);
                 const colaborador = allColaboradores.find(c => c.id === tarefa.colaboradorId);
-                
+                const fornecedor = allFornecedores.find(f => f.id === tarefa.fornecedorId);
                 const statusMap = {
                     'Pendente': { text: 'Pendente', color: 'bg-[var(--status-nao-iniciado-bg)] text-[var(--status-nao-iniciado-text)]' },
                     'Em Andamento': { text: 'Em Andamento', color: 'bg-[var(--status-em-andamento-bg)] text-[var(--status-em-andamento-text)]' },
                     'Finalizado': { text: 'Finalizado', color: 'bg-[var(--status-finalizado-bg)] text-[var(--status-finalizado-text)]' },
                 };
                 const statusInfo = statusMap[tarefa.status] || statusMap['Pendente'];
+                const hasSubtarefas = tarefa.subtarefas && tarefa.subtarefas.length > 0;
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td class="whitespace-nowrap text-sm font-medium text-primary">${tarefa.descricao}</td>
+                    <td>
+                        ${hasSubtarefas ? '<button class="expand-toggle text-accent-brown p-2"><i class="fa-solid fa-chevron-right expand-icon"></i></button>' : ''}
+                    </td>
+                    <td class="whitespace-nowrap font-medium text-primary">${tarefa.titulo || 'Tarefa sem Título'}</td>
+                    <td class="max-w-xs truncate text-sm text-secondary" title="${tarefa.descricao?.replace(/<[^>]*>/g, '') || ''}">${tarefa.descricao?.replace(/<[^>]*>/g, '') || 'Sem descrição'}</td>
                     <td class="whitespace-nowrap text-sm text-secondary">${cliente?.nome || 'N/A'}</td>
                     <td class="whitespace-nowrap text-sm text-secondary">${colaborador?.nome || 'N/A'}</td>
+                    <td class="whitespace-nowrap text-sm text-secondary">${fornecedor?.nome || 'N/A'}</td>
                     <td class="whitespace-nowrap text-sm text-secondary">${formatDate(tarefa.dataInicio)} - ${formatDate(tarefa.dataFim)}</td>
-                    <td class="whitespace-nowrap text-sm">
-                        <span class="status-badge ${statusInfo.color}">${statusInfo.text}</span>
-                    </td>
+                    <td><span class="status-badge ${statusInfo.color}">${statusInfo.text}</span></td>
                     <td class="whitespace-nowrap text-right text-sm font-medium">
                         <div class="flex items-center space-x-3 text-lg">
                             ${tarefa.status === 'Pendente' ? `<button title="Iniciar Tarefa" data-id="${tarefa.id}" data-status="Em Andamento" class="btn-status-change-tarefa text-blue-600 hover:text-blue-800"><i class="fa-solid fa-play"></i></button>` : ''}
@@ -1501,6 +1540,27 @@
                     </td>
                 `;
                 tbody.appendChild(row);
+
+                if (hasSubtarefas) {
+                    const subtaskRow = document.createElement('tr');
+                    subtaskRow.className = 'task-row-expandable';
+
+                    const subtarefasHTML = tarefa.subtarefas.map(st => `
+                        <div class="flex items-center gap-3 py-1">
+                            <input type="checkbox" ${st.concluida ? 'checked' : ''} disabled>
+                            <span class="${st.concluida ? 'subtarefa-concluida' : ''}">${st.texto}</span>
+                            ${st.lembreteData ? `<span class="text-xs text-accent-brown ml-auto"><i class="fa-regular fa-bell"></i> ${formatDate(st.lembreteData)}</span>` : ''}
+                        </div>
+                    `).join('');
+
+                    subtaskRow.innerHTML = `<td colspan="9"><div class="p-3 space-y-1">${subtarefasHTML}</div></td>`;
+                    tbody.appendChild(subtaskRow);
+
+                    row.querySelector('.expand-toggle').addEventListener('click', (e) => {
+                        e.currentTarget.querySelector('.expand-icon').classList.toggle('rotated');
+                        subtaskRow.classList.toggle('visible');
+                    });
+                }
             });
         };
 
@@ -2533,21 +2593,33 @@ const renderAlertas = (alertas) => {
 
         // --- FIRESTORE OPERATIONS ---
 
+        const getSubtarefasFromDOM = () => {
+            const subtarefas = [];
+            document.querySelectorAll('#subtarefas-container .subtarefa-item').forEach(item => {
+                subtarefas.push({
+                    id: item.dataset.id || `sub_${Date.now()}_${Math.random()}`,
+                    texto: item.querySelector('input[type="text"]').value,
+                    concluida: item.querySelector('input[type="checkbox"]').checked,
+                    lembreteData: item.querySelector('input[type="date"]').value || null
+                });
+            });
+            return subtarefas;
+        };
+
         document.getElementById('form-tarefa').addEventListener('submit', async (e) => {
             e.preventDefault();
             const tarefaId = document.getElementById('tarefa-id').value;
             const tarefaData = {
+                titulo: document.getElementById('tarefa-titulo').value, // NOVO
+                descricao: document.getElementById('tarefa-descricao').innerHTML, // NOVO (HTML)
+                subtarefas: getSubtarefasFromDOM(), // NOVO
                 clienteId: document.getElementById('tarefa-cliente').value,
                 servicoId: document.getElementById('tarefa-servico').value,
-                descricao: document.getElementById('tarefa-descricao').value,
                 fornecedorId: document.getElementById('tarefa-fornecedor').value,
                 colaboradorId: document.getElementById('tarefa-colaborador').value,
                 dataInicio: document.getElementById('tarefa-data-inicio').value,
                 dataFim: document.getElementById('tarefa-data-fim').value,
-                lembrete: document.getElementById('tarefa-lembrete').checked,
-                diasLembreteInicio: parseInt(document.getElementById('tarefa-dias-lembrete-inicio').value) || 0,
-                diasLembreteFim: parseInt(document.getElementById('tarefa-dias-lembrete-fim').value) || 0,
-                status: 'Pendente' // Default status
+                status: 'Pendente' // Manter status padrão
             };
 
             try {
@@ -2555,18 +2627,6 @@ const renderAlertas = (alertas) => {
                     await setDoc(doc(db, 'tarefas', tarefaId), tarefaData, { merge: true });
                 } else {
                     await addDoc(tarefasCol, tarefaData);
-                }
-
-                if (tarefaData.lembrete) {
-                    const cliente = allClientes.find(c => c.id === tarefaData.clienteId);
-                    const alertaData = {
-                        titulo: `Lembrete de Tarefa: ${tarefaData.descricao.substring(0, 30)}...`,
-                        data: tarefaData.dataInicio,
-                        cliente: cliente?.nome || 'N/A',
-                        lido: false,
-                        createdAt: new Date()
-                    };
-                    await addDoc(alertasCol, alertaData);
                 }
 
                 e.target.reset();
@@ -2811,16 +2871,20 @@ const renderAlertas = (alertas) => {
                 const tarefaToEdit = allTarefas.find(t => t.id === tarefaId);
                 if (tarefaToEdit) {
                     document.getElementById('tarefa-id').value = tarefaToEdit.id;
+                    document.getElementById('tarefa-titulo').value = tarefaToEdit.titulo || ''; // Popular título
+                    document.getElementById('tarefa-descricao').innerHTML = tarefaToEdit.descricao || ''; // Popular descrição HTML
+
+                    // Limpar e popular subtarefas
+                    document.getElementById('subtarefas-container').innerHTML = '';
+                    if(tarefaToEdit.subtarefas) {
+                        tarefaToEdit.subtarefas.forEach(st => renderSubtarefaInput(st));
+                    }
                     document.getElementById('tarefa-cliente').value = tarefaToEdit.clienteId;
                     document.getElementById('tarefa-servico').value = tarefaToEdit.servicoId;
-                    document.getElementById('tarefa-descricao').value = tarefaToEdit.descricao;
                     document.getElementById('tarefa-fornecedor').value = tarefaToEdit.fornecedorId;
                     document.getElementById('tarefa-colaborador').value = tarefaToEdit.colaboradorId;
                     document.getElementById('tarefa-data-inicio').value = tarefaToEdit.dataInicio;
                     document.getElementById('tarefa-data-fim').value = tarefaToEdit.dataFim;
-                    document.getElementById('tarefa-lembrete').checked = tarefaToEdit.lembrete;
-                    document.getElementById('tarefa-dias-lembrete-inicio').value = tarefaToEdit.diasLembreteInicio || '';
-                    document.getElementById('tarefa-dias-lembrete-fim').value = tarefaToEdit.diasLembreteFim || '';
                     document.getElementById('modal-tarefa-title').textContent = 'Editar Tarefa';
                     openModal('modal-tarefa');
                 }
@@ -2886,6 +2950,40 @@ const renderAlertas = (alertas) => {
             document.getElementById('modal-tarefa-title').textContent = 'Criar Nova Tarefa';
             openModal('modal-tarefa');
         });
+
+// Toolbar do Editor
+document.getElementById('editor-toolbar').addEventListener('click', e => {
+    const btn = e.target.closest('.toolbar-btn');
+    if (btn) {
+        document.execCommand(btn.dataset.command, false, null);
+    }
+});
+document.getElementById('editor-font-color').addEventListener('input', e => {
+    document.execCommand('foreColor', false, e.target.value);
+});
+
+// Lógica de Subtarefas
+const renderSubtarefaInput = (subtarefa = {}) => {
+    const container = document.getElementById('subtarefas-container');
+    const div = document.createElement('div');
+    div.className = 'subtarefa-item';
+    div.dataset.id = subtarefa.id || '';
+    div.innerHTML = `
+        <input type="checkbox" class="h-5 w-5" ${subtarefa.concluida ? 'checked' : ''}>
+        <input type="text" placeholder="Descrição da subtarefa..." class="text-sm" value="${subtarefa.texto || ''}">
+        <input type="date" title="Data do lembrete (opcional)" class="text-sm" value="${subtarefa.lembreteData || ''}">
+        <button type="button" class="btn-remove-subtarefa text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button>
+    `;
+    container.appendChild(div);
+};
+
+document.getElementById('btn-add-subtarefa').addEventListener('click', () => renderSubtarefaInput());
+
+document.getElementById('subtarefas-container').addEventListener('click', e => {
+    if (e.target.closest('.btn-remove-subtarefa')) {
+        e.target.closest('.subtarefa-item').remove();
+    }
+});
 
 
         document.getElementById('btn-abrir-modal-solicitacao').addEventListener('click', () => {
