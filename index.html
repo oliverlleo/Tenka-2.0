@@ -3004,35 +3004,6 @@ document.getElementById('editor-font-color').addEventListener('input', e => {
 });
 
 // Lógica de Subtarefas
-const renderSubtarefaInput = (subtarefa = {}) => {
-    const container = document.getElementById('subtarefas-container');
-    const div = document.createElement('div');
-    const subId = subtarefa.id || `sub_${Date.now()}_${Math.random()}`;
-    div.className = 'subtarefa-item pl-4 border-l-2 border-border-color';
-    div.dataset.id = subId;
-    div.innerHTML = `
-        <div class="flex items-center gap-3 w-full">
-            <input type="checkbox" class="subtarefa-checkbox h-5 w-5 flex-shrink-0" ${subtarefa.concluida ? 'checked' : ''}>
-            <input type="text" placeholder="Descrição da subtarefa..." class="subtarefa-texto text-sm flex-grow" value="${subtarefa.texto || ''}">
-            <button type="button" class="btn-remove-subtarefa text-red-500 hover:text-red-700 flex-shrink-0"><i class="fa-solid fa-trash"></i></button>
-        </div>
-        <div class="flex items-center gap-2 mt-1 pl-8">
-             <input type="checkbox" id="lembrete-check-${subId}" class="subtarefa-lembrete-check h-4 w-4" ${subtarefa.lembreteData ? 'checked' : ''}>
-             <label for="lembrete-check-${subId}" class="text-xs text-secondary cursor-pointer">Lembrete</label>
-             <input type="date" title="Data do lembrete" class="subtarefa-lembrete-data text-sm" value="${subtarefa.lembreteData || ''}" ${!subtarefa.lembreteData ? 'disabled' : ''}>
-        </div>
-    `;
-    container.appendChild(div);
-
-    const lembreteCheck = div.querySelector('.subtarefa-lembrete-check');
-    const lembreteDataInput = div.querySelector('.subtarefa-lembrete-data');
-    lembreteCheck.addEventListener('change', (e) => {
-        lembreteDataInput.disabled = !e.target.checked;
-        if (!e.target.checked) {
-            lembreteDataInput.value = '';
-        }
-    });
-};
 
 document.getElementById('btn-add-subtarefa').addEventListener('click', () => renderSubtarefaInput());
 
