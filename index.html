@@ -2829,6 +2829,20 @@ const renderAlertas = (alertas) => {
         });
 
         // --- EVENT LISTENERS (MODALS, NAV, TABS) ---
+        const navLinks = {
+            dashboard: document.getElementById('nav-dashboard'),
+            compras: document.getElementById('nav-compras'),
+            tasks: document.getElementById('nav-tasks'),
+            cadastros: document.getElementById('nav-cadastros'),
+            alertas: document.getElementById('nav-alertas'),
+        };
+        const views = {
+            dashboard: document.getElementById('view-dashboard'),
+            compras: document.getElementById('view-compras'),
+            tasks: document.getElementById('view-tasks'),
+            cadastros: document.getElementById('view-cadastros'),
+            // 'alertas' não tem uma view principal, é um dropdown/modal
+        };
 
         navLinks.alertas.addEventListener('click', (e) => {
             e.preventDefault();
@@ -2965,21 +2979,6 @@ const renderAlertas = (alertas) => {
         });
         
         // Navegação pela Sidebar
-        const navLinks = {
-            dashboard: document.getElementById('nav-dashboard'),
-            compras: document.getElementById('nav-compras'),
-            tasks: document.getElementById('nav-tasks'),
-            cadastros: document.getElementById('nav-cadastros'),
-            alertas: document.getElementById('nav-alertas'),
-        };
-        const views = {
-            dashboard: document.getElementById('view-dashboard'),
-            compras: document.getElementById('view-compras'),
-            tasks: document.getElementById('view-tasks'),
-            cadastros: document.getElementById('view-cadastros'),
-            // 'alertas' não tem uma view principal, é um dropdown/modal
-        };
-
         const handleNavigation = (targetView) => {
             if (targetView === 'alertas') {
                 // Lógica para abrir o modal/dropdown de alertas
