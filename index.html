@@ -1795,12 +1795,12 @@
         });
     };
 
-    const renderDetalhesClienteTarefasView = (clienteId) => {
+    const renderDetalhesClienteTarefasView = (clienteId, defaultView = 'table') => {
         const container = document.getElementById('container-detalhes-tarefas');
         container.innerHTML = `
             <div class="flex justify-end mb-4">
                  <div class="isolate inline-flex rounded-md shadow-sm">
-                    <button type="button" id="btn-task-view-table-modal" class="relative modal-task-view-btn inline-flex items-center rounded-l-md px-3 py-2 text-sm font-semibold focus:z-10 view-btn-active">Tabela</button>
+                    <button type="button" id="btn-task-view-table-modal" class="relative modal-task-view-btn inline-flex items-center rounded-l-md px-3 py-2 text-sm font-semibold focus:z-10">Tabela</button>
                     <button type="button" id="btn-task-view-kanban-modal" class="relative modal-task-view-btn -ml-px bg-white text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 inline-flex items-center rounded-r-md px-3 py-2 text-sm font-semibold focus:z-10">Kanban</button>
                 </div>
             </div>
@@ -1811,27 +1811,22 @@
         const taskContentContainer = document.getElementById('modal-task-content-container');
         
         const renderContent = (view) => {
+            document.querySelectorAll('.modal-task-view-btn').forEach(b => b.classList.remove('view-btn-active'));
             if (view === 'table') {
+                document.getElementById('btn-task-view-table-modal').classList.add('view-btn-active');
                 renderTaskTableInContainer(tarefasDoCliente, taskContentContainer);
             } else if (view === 'kanban') {
+                document.getElementById('btn-task-view-kanban-modal').classList.add('view-btn-active');
                 renderKanbanInContainer(tarefasDoCliente, taskContentContainer);
             }
         };
 
-        // Renderização inicial
-        renderContent('table');
+        // Renderização inicial usando o novo parâmetro
+        renderContent(defaultView);
 
         // Listeners do seletor aninhado
-        document.getElementById('btn-task-view-table-modal').addEventListener('click', (e) => {
-            document.querySelectorAll('.modal-task-view-btn').forEach(b => b.classList.remove('view-btn-active'));
-            e.currentTarget.classList.add('view-btn-active');
-            renderContent('table');
-        });
-        document.getElementById('btn-task-view-kanban-modal').addEventListener('click', (e) => {
-            document.querySelectorAll('.modal-task-view-btn').forEach(b => b.classList.remove('view-btn-active'));
-            e.currentTarget.classList.add('view-btn-active');
-            renderContent('kanban');
-        });
+        document.getElementById('btn-task-view-table-modal').addEventListener('click', () => renderContent('table'));
+        document.getElementById('btn-task-view-kanban-modal').addEventListener('click', () => renderContent('kanban'));
     };
         const renderTabelaTarefas = () => {
     const tbody = document.getElementById('tabela-tarefas');
@@ -4181,7 +4176,12 @@ document.getElementById('subtarefas-container').addEventListener('click', e => {
                     const containerTarefas = document.getElementById('container-detalhes-tarefas');
                     // Se a aba de tarefas estiver ativa dentro do modal, redesenha seu conteúdo
                     if (containerTarefas && !containerTarefas.classList.contains('hidden')) {
-                        renderDetalhesClienteTarefasView(clientModalCalendarState.clienteId);
+                        // Verifica qual botão de view está ativo atualmente
+                        const kanbanBtn = document.getElementById('btn-task-view-kanban-modal');
+                        const activeView = kanbanBtn && kanbanBtn.classList.contains('view-btn-active') ? 'kanban' : 'table';
+                        
+                        // Chama a função passando a view ativa para preservar o estado
+                        renderDetalhesClienteTarefasView(clientModalCalendarState.clienteId, activeView);
                     }
                 }
                 // *** FIM DO BLOCO DE CÓDIGO ***
