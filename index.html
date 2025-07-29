@@ -528,24 +528,33 @@
             border-color: var(--accent-green-dark);
         }
 
-/* --- ESTILOS PARA EDITOR E SUBTAREFAS (ATUALIZADO) --- */
+/* --- ESTILOS FINAIS E CORRIGIDOS PARA TAREFAS --- */
+
+/* ESTA É A SUA CORREÇÃO: Rolagem principal do modal */
+#modal-tarefa .modal-content {
+    max-height: 90vh; /* O modal nunca ocupará mais que 90% da altura da tela */
+    overflow-y: auto;   /* Adiciona a barra de rolagem principal quando o conteúdo transborda */
+}
+
+/* Rolagem interna para a lista de subtarefas */
+#subtarefas-container {
+    max-height: 150px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+/* Estilos do Editor e Subtarefas */
 .toolbar-btn { width: 30px; height: 30px; border: 1px solid transparent; border-radius: 4px; transition: all 0.2s ease; }
 .toolbar-btn:hover { background-color: var(--border-color); }
 .toolbar-color-picker { width: 30px; height: 30px; border: none; background: none; cursor: pointer; padding: 2px; }
 
 #tarefa-descricao:focus { border-color: var(--accent-brown); box-shadow: 0 0 0 3px rgba(138, 90, 68, 0.3); }
 
-/* --- CSS PARA ROLAGEM E ESTILO DAS SUBTAREFAS (NOVO/CORRIGIDO) --- */
-#subtarefas-container {
-    max-height: 150px; /* Altura máxima antes de a rolagem aparecer */
-    overflow-y: auto;  /* Adiciona a barra de rolagem vertical quando necessário */
-    padding-right: 8px; /* Espaço para a barra de rolagem não sobrepor o conteúdo */
-}
 .subtarefa-item { display: flex; flex-direction: column; gap: 0.25rem; }
 .subtarefa-item .subtarefa-concluida { text-decoration: line-through; color: var(--text-secondary); }
 .subtarefa-lembrete-data:disabled { background-color: var(--bg-main); opacity: 0.6; }
 
-/* CSS para a tabela expansível */
+/* Estilos da Tabela Expansível */
 .task-row-expandable { display: none; }
 .task-row-expandable.visible { display: table-row; }
 .task-row-expandable td { background-color: #f4f1e8; padding-left: 5rem !important; }
