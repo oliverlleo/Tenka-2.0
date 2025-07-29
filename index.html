@@ -834,17 +834,20 @@
                             <p class="text-secondary text-sm md:text-base">Crie e organize as tarefas dos seus projetos.</p>
                         </div>
                         <div class="flex items-center space-x-4">
-                            <div class="isolate inline-flex rounded-md shadow-sm">
-                                <button type="button" id="btn-view-task-table" class="relative task-view-btn inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10 view-btn-active">
-                                    <i class="fa-solid fa-table-list"></i>
-                                </button>
-                                <button type="button" id="btn-view-task-kanban" class="relative task-view-btn -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
-                                    <i class="fa-solid fa-grip"></i>
-                                </button>
-                                <button type="button" id="btn-view-task-calendar" class="relative task-view-btn -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
-                                    <i class="fa-solid fa-calendar-days"></i>
-                                </button>
-                            </div>
+    <div class="isolate inline-flex rounded-md shadow-sm">
+        <button type="button" id="btn-view-task-table" class="relative task-view-btn inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10 view-btn-active">
+            <i class="fa-solid fa-table-list"></i>
+        </button>
+        <button type="button" id="btn-view-task-kanban" class="relative task-view-btn -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
+            <i class="fa-solid fa-grip"></i>
+        </button>
+        <button type="button" id="btn-view-task-client" class="relative task-view-btn -ml-px inline-flex items-center bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
+            <i class="fa-solid fa-user-tag"></i>
+        </button>
+        <button type="button" id="btn-view-task-calendar" class="relative task-view-btn -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">
+            <i class="fa-solid fa-calendar-days"></i>
+        </button>
+    </div>
                             <button id="btn-abrir-modal-tarefa" class="btn-primary inline-flex items-center px-4 py-2">
                                 <i class="fa-solid fa-plus mr-2"></i> Criar Tarefa
                             </button>
@@ -874,17 +877,17 @@
                             <div class="overflow-x-auto content-card">
                                 <table class="min-w-full">
                                     <thead>
-    <tr>
-        <th class="w-10"></th> <th>Tarefa</th>
-        <th>Descrição</th>
-        <th>Cliente</th>
-        <th>Colaborador</th>
-        <th>Fornecedor</th>
-        <th>Datas</th>
-        <th>Status</th>
-        <th>Ações</th>
-    </tr>
-</thead>
+        <tr>
+            <th class="w-10"></th>
+            <th>Tarefa</th>
+            <th>Cliente</th>
+            <th>Colaborador</th>
+            <th>Fornecedor</th>
+            <th>Datas</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
                                     <tbody id="tabela-tarefas"></tbody>
                                 </table>
                             </div>
@@ -910,6 +913,8 @@
                                 <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
                             </div>
                             <div id="task-cal-body" class="grid grid-cols-7 gap-1"></div>
+                        </div>
+                        <div id="tasks-client-view" class="hidden grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
                         </div>
                     </div>
                 </div>
@@ -1626,8 +1631,10 @@
             <td>
                 ${hasSubtarefas ? '<button class="expand-toggle text-accent-brown p-2"><i class="fa-solid fa-chevron-right expand-icon"></i></button>' : ''}
             </td>
-            <td class="font-medium text-primary">${tarefa.titulo || 'Tarefa sem Título'}</td>
-            <td class="max-w-xs truncate text-sm text-secondary" title="${descricaoTexto}">${descricaoTexto || 'Sem descrição'}</td>
+            <td class="align-middle">
+                <div class="font-medium text-primary truncate" title="${tarefa.titulo || ''}">${tarefa.titulo || 'Tarefa sem Título'}</div>
+                <div class="text-sm text-secondary truncate" title="${descricaoTexto}">${descricaoTexto || 'Sem descrição'}</div>
+            </td>
             <td class="text-sm text-secondary">${cliente?.nome || 'N/A'}</td>
             <td class="text-sm text-secondary">${colaborador?.nome || 'N/A'}</td>
             <td class="text-sm text-secondary">${fornecedor?.nome || 'N/A'}</td>
@@ -1814,6 +1821,13 @@
         });
         };
 
+    const styleSheet = document.createElement("style");
+    styleSheet.innerText = `
+        .subtasks-list-container.hidden { display: none; }
+        .expand-icon.rotated-up { transform: rotate(-90deg); }
+        .task-footer-tag { padding: 4px 10px; border-radius: 9999px; font-weight: 600; display: inline-flex; align-items: center; }
+    `;
+    document.head.appendChild(styleSheet);
         const renderTaskCalendarView = () => {
             const { month, year } = taskCalendarState;
             const calBody = document.getElementById('task-cal-body');
@@ -1867,6 +1881,137 @@
                 calBody.appendChild(dayCell);
             }
         };
+
+    const renderClientView = async () => {
+        const container = document.getElementById('tasks-client-view');
+        if (!container) return;
+        container.innerHTML = ''; // Limpa a view antes de renderizar
+
+        const statusPermitidos = ['Pendente', 'Em Andamento'];
+        const tarefasAtivas = allTarefas.filter(t => statusPermitidos.includes(t.status));
+        const clientesComTarefasAtivasIds = [...new Set(tarefasAtivas.map(t => t.clienteId))];
+
+        if (clientesComTarefasAtivasIds.length === 0) {
+            container.innerHTML = `<div class="text-center py-16 content-card">
+                <i class="fa-solid fa-check-circle text-5xl text-accent-green-dark mb-4"></i>
+                <h3 class="text-xl font-semibold text-primary">Tudo em ordem!</h3>
+                <p class="text-secondary">Nenhum cliente com tarefas pendentes ou em andamento.</p>
+            </div>`;
+            return;
+        }
+
+        const clientesFiltrados = allClientes
+            .filter(c => clientesComTarefasAtivasIds.includes(c.id))
+            .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+        clientesFiltrados.forEach(cliente => {
+            const tarefasDoCliente = tarefasAtivas.filter(t => t.clienteId === cliente.id);
+            const clienteModule = document.createElement('div');
+            clienteModule.className = 'client-module-card content-card';
+            clienteModule.dataset.clientId = cliente.id;
+            clienteModule.draggable = true;
+
+            const tarefasHTML = tarefasDoCliente.map(tarefa => {
+                const colaborador = allColaboradores.find(c => c.id === tarefa.colaboradorId);
+                const fornecedor = allFornecedores.find(f => f.id === tarefa.fornecedorId);
+                const hasSubtarefas = tarefa.subtarefas && tarefa.subtarefas.length > 0;
+                const descricaoTexto = (tarefa.descricao || '').replace(/<[^>]*>/g, '');
+                const subtarefasHTML = hasSubtarefas ? tarefa.subtarefas.map(st => `
+                    <div class="subtarefa-checklist-item flex items-center gap-3 py-1">
+                        <input type="checkbox" id="client-view-st-${st.id}" data-tarefa-id="${tarefa.id}" data-subtarefa-id="${st.id}" class="subtarefa-checkbox-kanban" ${st.concluida ? 'checked' : ''}>
+                        <label for="client-view-st-${st.id}" class="text-sm cursor-pointer ${st.concluida ? 'line-through text-secondary' : ''}">${st.texto}</label>
+                    </div>
+                `).join('') : '<p class="text-xs text-secondary">Nenhuma subtarefa.</p>';
+
+                return `
+                    <div class="task-card-item border-t border-border-color py-4" data-task-id="${tarefa.id}">
+                        <div class="flex justify-between items-start">
+                             <h2 class="text-xl font-lora font-semibold text-primary">${tarefa.titulo}</h2>
+                             ${hasSubtarefas ? `<button class="expand-subtasks-toggle text-accent-brown p-1 text-sm" data-target-id="subtasks-${tarefa.id}">
+                                <i class="fa-solid fa-chevron-down expand-icon"></i> <span class="toggle-text">Ocultar</span>
+                             </button>` : ''}
+                        </div>
+                        <p class="text-secondary mt-1 mb-3">${descricaoTexto}</p>
+
+                        <div id="subtasks-${tarefa.id}" class="subtasks-list-container bg-main p-3 rounded-lg border border-border-color space-y-1">
+                            ${subtarefasHTML}
+                        </div>
+
+                        <div class="task-footer-tags flex flex-wrap gap-2 mt-4 text-xs">
+                            ${fornecedor ? `<span class="task-footer-tag" style="background-color: ${generateColorFromString(fornecedor.nome)}; color: ${getTextColorForBg(generateColorFromString(fornecedor.nome))}"><i class="fa-solid fa-store mr-1.5"></i>${fornecedor.nome}</span>` : ''}
+                            ${colaborador ? `<span class="task-footer-tag" style="background-color: ${generateColorFromString(colaborador.nome)}; color: ${getTextColorForBg(generateColorFromString(colaborador.nome))}"><i class="fa-solid fa-user mr-1.5"></i>${colaborador.nome}</span>` : ''}
+                            <span class="task-footer-tag bg-gray-200 text-gray-700"><i class="fa-solid fa-calendar-alt mr-1.5"></i>${formatDate(tarefa.dataInicio)} - ${formatDate(tarefa.dataFim)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            clienteModule.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <h1 class="text-2xl md:text-3xl font-bold">${cliente.nome}</h1>
+                    <i class="fa-solid fa-grip-vertical text-border-color cursor-grab"></i>
+                </div>
+                ${tarefasHTML}
+            `;
+            container.appendChild(clienteModule);
+        });
+
+        // Event Listeners for new view
+        container.querySelectorAll('.expand-subtasks-toggle').forEach(button => {
+            button.addEventListener('click', () => {
+                const targetId = button.dataset.targetId;
+                const targetContainer = document.getElementById(targetId);
+                const icon = button.querySelector('.expand-icon');
+                const text = button.querySelector('.toggle-text');
+                targetContainer.classList.toggle('hidden');
+                icon.classList.toggle('rotated-up'); // you might need a new CSS class for this
+                text.textContent = targetContainer.classList.contains('hidden') ? 'Mostrar' : 'Ocultar';
+            });
+        });
+
+        // Drag and Drop Logic
+        let draggedItem = null;
+        container.querySelectorAll('.client-module-card').forEach(item => {
+            item.addEventListener('dragstart', () => {
+                draggedItem = item;
+                setTimeout(() => item.style.opacity = '0.5', 0);
+            });
+            item.addEventListener('dragend', () => {
+                setTimeout(() => {
+                    draggedItem.style.opacity = '1';
+                    draggedItem = null;
+                }, 0);
+            });
+            item.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+            item.addEventListener('drop', async (e) => {
+                e.preventDefault();
+                if (draggedItem && draggedItem !== item) {
+                    const allModules = Array.from(container.querySelectorAll('.client-module-card'));
+                    const draggedIndex = allModules.indexOf(draggedItem);
+                    const targetIndex = allModules.indexOf(item);
+
+                    // Reorder visually first for instant feedback
+                    if (draggedIndex < targetIndex) {
+                        container.insertBefore(draggedItem, item.nextSibling);
+                    } else {
+                        container.insertBefore(draggedItem, item);
+                    }
+
+                    // Now, update the order in Firestore
+                    const updatedOrder = Array.from(container.querySelectorAll('.client-module-card'));
+                    const batch = writeBatch(db);
+                    updatedOrder.forEach((module, index) => {
+                        const clientId = module.dataset.clientId;
+                        const docRef = doc(db, 'clientes', clientId);
+                        batch.update(docRef, { order: index });
+                    });
+                    await batch.commit();
+                }
+            });
+        });
+    };
 
         const renderTabelaCompras = () => {
             const tbody = document.getElementById('tabela-compras');
@@ -2847,6 +2992,7 @@ const renderSubtarefaInput = (subtarefa = {}) => {
                 } else {
                     clienteData.os = `OS-${Date.now().toString().slice(-6)}`;
                     clienteData.createdAt = new Date();
+                    clienteData.order = Date.now(); // <-- ADICIONAR ESTA LINHA
                     await addDoc(clientesCol, clienteData);
                 }
                 e.target.reset();
@@ -3372,11 +3518,13 @@ document.getElementById('subtarefas-container').addEventListener('click', e => {
         const taskViewBtns = {
             table: document.getElementById('btn-view-task-table'),
             kanban: document.getElementById('btn-view-task-kanban'),
+            client: document.getElementById('btn-view-task-client'), // <-- ADICIONAR
             calendar: document.getElementById('btn-view-task-calendar')
         };
         const taskViews = {
             table: document.getElementById('tasks-table-view'),
             kanban: document.getElementById('tasks-kanban-view'),
+            client: document.getElementById('tasks-client-view'), // <-- ADICIONAR
             calendar: document.getElementById('tasks-calendar-view')
         };
 
@@ -3720,6 +3868,7 @@ document.getElementById('subtarefas-container').addEventListener('click', e => {
                 renderTabelaClientes();
                 renderControleClientes();
                 renderDashboardCalendar();
+                renderClientView(); // <-- ADICIONAR CHAMADA
                 if (nomeResponsavel) renderViewResponsavel(nomeResponsavel);
             });
 
@@ -3749,6 +3898,7 @@ document.getElementById('subtarefas-container').addEventListener('click', e => {
                 renderTabelaTarefas();
                 renderKanbanView();
                 renderTaskCalendarView();
+                renderClientView(); // <-- ADICIONAR CHAMADA
                 verificarEGerarAlertas();
             });
 
