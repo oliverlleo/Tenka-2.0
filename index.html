@@ -789,11 +789,12 @@
                                 <table class="min-w-full">
                                     <thead>
                                         <tr>
-                                        <th class="w-10"></th> <th>Tarefa</th>
-                                        <th>Descrição</th>
+                                            <th class="w-10"></th>
+                                            <th>Tarefa</th>
+                                            <th>Descrição</th>
                                             <th>Cliente</th>
                                             <th>Colaborador</th>
-                                        <th>Fornecedor</th>
+                                            <th>Fornecedor</th>
                                             <th>Datas</th>
                                             <th>Status</th>
                                             <th>Ações</th>
@@ -1013,43 +1014,43 @@
         <div class="modal-content rounded-lg shadow-xl w-full max-w-2xl p-6 transform scale-95 content-card">
             <h3 class="text-xl md:text-2xl font-medium mb-4" id="modal-tarefa-title">Criar Nova Tarefa</h3>
             <form id="form-tarefa">
-    <input type="hidden" id="tarefa-id">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="md:col-span-2">
-            <label for="tarefa-titulo" class="block text-sm font-medium text-secondary">Título da Tarefa*</label>
-            <input type="text" id="tarefa-titulo" placeholder="Ex: Instalar bancada da cozinha" required class="mt-1">
-        </div>
+                <input type="hidden" id="tarefa-id">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="md:col-span-2">
+                        <label for="tarefa-titulo" class="block text-sm font-medium text-secondary">Título da Tarefa*</label>
+                        <input type="text" id="tarefa-titulo" placeholder="Ex: Instalar bancada da cozinha" required class="mt-1">
+                    </div>
 
-        <div class="md:col-span-2">
-            <label class="block text-sm font-medium text-secondary">Descrição e Subtarefas</label>
-            <div id="editor-toolbar" class="flex items-center space-x-2 p-2 bg-main border border-b-0 border-border-color rounded-t-lg">
-                <button type="button" class="toolbar-btn" data-command="bold"><i class="fa-solid fa-bold"></i></button>
-                <button type="button" class="toolbar-btn" data-command="italic"><i class="fa-solid fa-italic"></i></button>
-                <button type="button" class="toolbar-btn" data-command="underline"><i class="fa-solid fa-underline"></i></button>
-                <input type="color" id="editor-font-color" class="toolbar-color-picker" title="Cor do texto">
-            </div>
-            <div id="tarefa-descricao" contenteditable="true" class="h-24 p-2 border border-border-color overflow-y-auto" style="border-radius: 0 0 12px 4px;"></div>
-        </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-secondary">Descrição e Subtarefas</label>
+                        <div id="editor-toolbar" class="flex items-center space-x-2 p-2 bg-main border border-b-0 border-border-color rounded-t-lg">
+                            <button type="button" class="toolbar-btn" data-command="bold"><i class="fa-solid fa-bold"></i></button>
+                            <button type="button" class="toolbar-btn" data-command="italic"><i class="fa-solid fa-italic"></i></button>
+                            <button type="button" class="toolbar-btn" data-command="underline"><i class="fa-solid fa-underline"></i></button>
+                            <input type="color" id="editor-font-color" class="toolbar-color-picker" title="Cor do texto">
+                        </div>
+                        <div id="tarefa-descricao" contenteditable="true" class="h-24 p-2 border border-border-color overflow-y-auto" style="border-radius: 0 0 12px 4px;"></div>
+                    </div>
 
-        <div id="subtarefas-container" class="md:col-span-2 space-y-2">
-            </div>
-        <div class="md:col-span-2">
-            <button type="button" id="btn-add-subtarefa" class="btn-secondary py-1 px-3 text-sm">
-                <i class="fa-solid fa-plus mr-1"></i> Adicionar Subtarefa
-            </button>
-        </div>
+                    <div id="subtarefas-container" class="md:col-span-2 space-y-2">
+                        </div>
+                    <div class="md:col-span-2">
+                        <button type="button" id="btn-add-subtarefa" class="btn-secondary py-1 px-3 text-sm">
+                            <i class="fa-solid fa-plus mr-1"></i> Adicionar Subtarefa
+                        </button>
+                    </div>
 
-        <select id="tarefa-cliente" required><option value="">Selecione o Cliente</option></select>
-        <select id="tarefa-servico"><option value="">Selecione o Serviço/Produto</option></select>
-        <select id="tarefa-fornecedor"><option value="">Selecione o Fornecedor</option></select>
-        <select id="tarefa-colaborador"><option value="">Atribuir a um Colaborador</option></select>
-        <input type="date" id="tarefa-data-inicio" required>
-        <input type="date" id="tarefa-data-fim" required>
+                    <select id="tarefa-cliente" required><option value="">Selecione o Cliente</option></select>
+                    <select id="tarefa-servico"><option value="">Selecione o Serviço/Produto</option></select>
+                    <select id="tarefa-fornecedor"><option value="">Selecione o Fornecedor</option></select>
+                    <select id="tarefa-colaborador"><option value="">Atribuir a um Colaborador</option></select>
+                    <input type="date" id="tarefa-data-inicio" required>
+                    <input type="date" id="tarefa-data-fim" required>
 
-        <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-border-color pt-4">
-            </div>
-    </div>
-    </form>
+                    <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-border-color pt-4">
+                        </div>
+                </div>
+                </form>
         </div>
     </div>
     
