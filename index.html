@@ -2830,11 +2830,6 @@ const renderAlertas = (alertas) => {
 
         // --- EVENT LISTENERS (MODALS, NAV, TABS) ---
 
-        navLinks.alertas.addEventListener('click', (e) => {
-            e.preventDefault();
-            openModal('modal-alertas');
-        });
-
         document.addEventListener('click', async (e) => {
             const btnLido = e.target.closest('.btn-marcar-lido');
             if (btnLido) {
@@ -2982,8 +2977,7 @@ const renderAlertas = (alertas) => {
 
         const handleNavigation = (targetView) => {
             if (targetView === 'alertas') {
-                // Lógica para abrir o modal/dropdown de alertas
-                console.log("Abrir alertas");
+                openModal('modal-alertas');
                 return;
             }
 
