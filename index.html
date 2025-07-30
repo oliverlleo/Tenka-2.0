@@ -2922,9 +2922,9 @@
         };
 
         const renderMonthlyCalendar = () => {
-            const { month, year, clienteId } = clientModalCalendarState;
+            const { month, year, clienteId } = clientModalCalendarState; // clienteId é a chave aqui
             const calBody = document.getElementById('cal-body');
-            if (!calBody) return;
+            if (!calBody || !clienteId) return; // Não renderiza se não houver um cliente em contexto
             calBody.innerHTML = '';
 
             const showCompras = document.getElementById('toggle-compras-mensal').checked;
@@ -2953,9 +2953,10 @@
 
                 const currentDate = new Date(year, month, i);
 
-                // Renderizar Compras
+                // Renderizar Compras (COM FILTRO DE CLIENTE)
                 if (showCompras) {
                     const comprasForDay = allCompras.filter(task => {
+                        if (task.clienteId !== clienteId) return false; // <-- CORREÇÃO: Filtra apenas pelo cliente atual
                         if (!task.inicioPrevisto || !task.terminoPrevisto) return false;
                         const inicio = new Date(task.inicioPrevisto + 'T00:00:00');
                         const termino = new Date(task.terminoPrevisto + 'T00:00:00');
@@ -2971,7 +2972,6 @@
                             taskEl.className = 'calendar-task';
                             taskEl.style.backgroundColor = bgColor;
                             taskEl.style.color = textColor;
-                            taskEl.style.borderColor = textColor === '#ffffff' ? 'transparent' : '#4a403a';
                             taskEl.innerHTML = `<i class="fa-solid fa-cart-shopping fa-xs mr-1.5"></i><strong>${cliente.nome.split(' ')[0]}:</strong> ${task.servico}`;
                             taskEl.title = `[Compra] ${cliente.nome} - ${task.servico}`;
                             tasksContainer.appendChild(taskEl);
@@ -2979,10 +2979,11 @@
                     });
                 }
                 
-                // Renderizar Tarefas
+                // Renderizar Tarefas (COM FILTRO DE CLIENTE CORRIGIDO)
                 if (showTarefas) {
                     const tarefasForDay = allTarefas.filter(tarefa => {
-                        if (!tarefa.dataInicio || !tarefa.dataFim || tarefa.clienteId !== clienteId) return false;
+                        if (tarefa.clienteId !== clienteId) return false; // <-- CORREÇÃO: Garante que é o cliente atual
+                        if (!tarefa.dataInicio || !tarefa.dataFim) return false;
                         const inicio = new Date(tarefa.dataInicio + 'T00:00:00');
                         const termino = new Date(tarefa.dataFim + 'T00:00:00');
                         return currentDate >= inicio && currentDate <= termino;
@@ -2997,8 +2998,6 @@
                          taskEl.className = 'calendar-task';
                          taskEl.style.backgroundColor = bgColor;
                          taskEl.style.color = textColor;
-                         taskEl.style.borderColor = `1px solid ${textColor === '#ffffff' ? 'var(--text-primary)' : 'white'}`;
-
                          taskEl.innerHTML = `<i class="fa-solid fa-list-check fa-xs mr-1.5"></i><strong>${cliente.nome.split(' ')[0]}:</strong> ${task.titulo}`;
                          taskEl.title = `[Tarefa] ${cliente.nome} - ${task.titulo}`;
                          tasksContainer.appendChild(taskEl);
