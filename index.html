@@ -1340,6 +1340,16 @@
                         <button id="btn-abrir-calendario-mensal" class="text-xs md:text-sm text-accent-brown hover:underline font-medium">
                             Ver calendário completo <i class="fa-solid fa-calendar-days ml-1"></i>
                         </button>
+                        <div id="semanal-filter-container" class="flex items-center gap-x-4 gap-y-2 mt-2 text-sm flex-wrap">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" id="toggle-compras-semanal" class="h-4 w-4 rounded border-gray-300 text-accent-brown focus:ring-accent-brown" checked>
+                                <span class="text-secondary"><i class="fa-solid fa-cart-shopping w-4 text-center"></i> Compras</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" id="toggle-tarefas-semanal" class="h-4 w-4 rounded border-gray-300 text-accent-brown focus:ring-accent-brown" checked>
+                                <span class="text-secondary"><i class="fa-solid fa-list-check w-4 text-center"></i> Tarefas</span>
+                            </label>
+                        </div>
                     </div>
                     <div id="calendario-semanal" class="grid grid-cols-7 gap-1"></div>
                 </div>
@@ -1388,6 +1398,16 @@
                     <button id="cal-next-month" class="p-2 rounded-full hover:bg-gray-100"><i class="fa-solid fa-chevron-right"></i></button>
                 </div>
                 <button type="button" id="btn-fechar-modal-calendario-mensal" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+            </div>
+            <div id="mensal-filter-container" class="flex items-center justify-center gap-6 my-3 text-sm">
+                <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" id="toggle-compras-mensal" class="h-4 w-4 rounded border-gray-300 text-accent-brown focus:ring-accent-brown" checked>
+                    <span class="text-secondary"><i class="fa-solid fa-cart-shopping w-4 text-center"></i> Compras</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" id="toggle-tarefas-mensal" class="h-4 w-4 rounded border-gray-300 text-accent-brown focus:ring-accent-brown" checked>
+                    <span class="text-secondary"><i class="fa-solid fa-list-check w-4 text-center"></i> Tarefas</span>
+                </label>
             </div>
             <div class="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-secondary mb-2">
                 <div>Dom</div><div>Seg</div><div>Ter</div><div>Qua</div><div>Qui</div><div>Sex</div><div>Sáb</div>
@@ -2808,8 +2828,12 @@
         const renderWeeklyCalendar = (clienteId) => {
             const container = document.getElementById('calendario-semanal');
             container.innerHTML = '';
+
+            const showCompras = document.getElementById('toggle-compras-semanal').checked;
+            const showTarefas = document.getElementById('toggle-tarefas-semanal').checked;
+
             const today = new Date();
-            const dayOfWeek = today.getDay(); // 0 (Sun) to 6 (Sat)
+            const dayOfWeek = today.getDay(); 
             const startOfWeek = new Date(today);
             startOfWeek.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
             
@@ -2818,41 +2842,69 @@
             for(let i=0; i<7; i++) {
                 const day = new Date(startOfWeek);
                 day.setDate(startOfWeek.getDate() + i);
-                const isToday = day.toDateString() === today.toDateString();
+                const isToday = day.toDateString() === new Date().toDateString();
                 
                 const dayContainer = document.createElement('div');
                 dayContainer.className = `p-1 text-center rounded-lg min-h-[100px] border ${isToday ? 'bg-amber-100 border-amber-300' : 'bg-main border-border-color'}`;
-                
                 dayContainer.innerHTML = `<p class="font-semibold text-[0.6rem] md:text-sm ${isToday ? 'text-primary' : 'text-primary'}">${weekDays[i]} <span class="block font-bold ${isToday ? 'text-secondary' : 'text-secondary'}">${day.getDate()}</span></p>`;
                 
                 const tasksContainer = document.createElement('div');
                 tasksContainer.className = 'mt-1 space-y-1';
 
-                // [CORREÇÃO] Agora mostra todas as tarefas, destacando a do cliente atual
-                const tasksForDay = allCompras.filter(compra => {
-                    if (!compra.inicioPrevisto || !compra.terminoPrevisto) return false;
-                    const inicio = new Date(compra.inicioPrevisto + 'T00:00:00');
-                    const termino = new Date(compra.terminoPrevisto + 'T00:00:00');
-                    return day >= inicio && day <= termino;
-                });
+                // Renderizar Compras
+                if (showCompras) {
+                    const comprasForDay = allCompras.filter(compra => {
+                        if (!compra.inicioPrevisto || !compra.terminoPrevisto) return false;
+                        const inicio = new Date(compra.inicioPrevisto + 'T00:00:00');
+                        const termino = new Date(compra.terminoPrevisto + 'T00:00:00');
+                        return day >= inicio && day <= termino;
+                    });
 
-                tasksForDay.forEach(task => {
-                    const taskEl = document.createElement('div');
-                    const cliente = allClientes.find(c => c.id === task.clienteId);
-                    const isCurrentClientTask = task.clienteId === clienteId;
-                    
-                    const bgColor = generateColorFromString(cliente?.nome || 'default');
-                    const textColor = getTextColorForBg(bgColor);
+                    comprasForDay.forEach(task => {
+                        const cliente = allClientes.find(c => c.id === task.clienteId);
+                        if (cliente) { // Só mostra se o cliente for encontrado
+                            const taskEl = document.createElement('div');
+                            const bgColor = generateColorFromString(cliente.nome);
+                            const textColor = getTextColorForBg(bgColor);
+                            const isCurrentClientTask = task.clienteId === clienteId;
 
-                    taskEl.className = `calendar-task ${isCurrentClientTask ? '' : 'opacity-40'}`;
-                    taskEl.style.backgroundColor = bgColor;
-                    taskEl.style.color = textColor;
-                    taskEl.style.border = isCurrentClientTask ? `1px solid ${textColor === '#ffffff' ? 'var(--text-primary)' : 'white'}` : '1px solid transparent';
+                            taskEl.className = `calendar-task ${isCurrentClientTask ? '' : 'opacity-40'}`;
+                            taskEl.style.backgroundColor = bgColor;
+                            taskEl.style.color = textColor;
+                            taskEl.style.border = isCurrentClientTask ? `1px solid ${textColor === '#ffffff' ? 'var(--text-primary)' : 'white'}` : '1px solid transparent';
 
-                    taskEl.innerHTML = `<strong>${cliente ? cliente.nome.split(' ')[0] : '??'}:</strong> ${task.servico}`;
-                    taskEl.title = `${cliente ? cliente.nome : ''} - ${task.servico}: ${task.descricao || ''}`;
-                    tasksContainer.appendChild(taskEl);
-                });
+                            taskEl.innerHTML = `<i class="fa-solid fa-cart-shopping fa-xs mr-1.5"></i><strong>${cliente.nome.split(' ')[0]}:</strong> ${task.servico}`;
+                            taskEl.title = `[Compra] ${cliente.nome} - ${task.servico}`;
+                            tasksContainer.appendChild(taskEl);
+                        }
+                    });
+                }
+
+                // Renderizar Tarefas
+                if (showTarefas) {
+                    const tarefasForDay = allTarefas.filter(tarefa => {
+                        if (!tarefa.dataInicio || !tarefa.dataFim || tarefa.clienteId !== clienteId) return false;
+                        const inicio = new Date(tarefa.dataInicio + 'T00:00:00');
+                        const termino = new Date(tarefa.dataFim + 'T00:00:00');
+                        return day >= inicio && day <= termino;
+                    });
+
+                    tarefasForDay.forEach(task => {
+                        const cliente = allClientes.find(c => c.id === task.clienteId);
+                        const taskEl = document.createElement('div');
+                        const bgColor = generateColorFromString(cliente.nome);
+                        const textColor = getTextColorForBg(bgColor);
+                        
+                        taskEl.className = `calendar-task`;
+                        taskEl.style.backgroundColor = bgColor;
+                        taskEl.style.color = textColor;
+                        taskEl.style.border = `1px solid ${textColor === '#ffffff' ? 'var(--text-primary)' : 'white'}`;
+
+                        taskEl.innerHTML = `<i class="fa-solid fa-list-check fa-xs mr-1.5"></i><strong>${cliente.nome.split(' ')[0]}:</strong> ${task.titulo}`;
+                        taskEl.title = `[Tarefa] ${cliente.nome} - ${task.titulo}`;
+                        tasksContainer.appendChild(taskEl);
+                    });
+                }
                 
                 dayContainer.appendChild(tasksContainer);
                 container.appendChild(dayContainer);
@@ -2865,19 +2917,13 @@
             if (!calBody) return;
             calBody.innerHTML = '';
 
+            const showCompras = document.getElementById('toggle-compras-mensal').checked;
+            const showTarefas = document.getElementById('toggle-tarefas-mensal').checked;
+
             document.getElementById('cal-month-year').textContent = new Date(year, month).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
 
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-            const tasksForMonth = allCompras.filter(compra => {
-                if (!compra.inicioPrevisto || !compra.terminoPrevisto) return false;
-                const inicio = new Date(compra.inicioPrevisto + 'T00:00:00');
-                const termino = new Date(compra.terminoPrevisto + 'T00:00:00');
-                return (inicio.getMonth() === month && inicio.getFullYear() === year) || 
-                       (termino.getMonth() === month && termino.getFullYear() === year) ||
-                       (inicio < new Date(year, month, 1) && termino > new Date(year, month, daysInMonth));
-            });
             
             for (let i = 0; i < firstDay; i++) {
                 calBody.innerHTML += `<div class="bg-gray-50 rounded"></div>`;
@@ -2888,35 +2934,66 @@
                 dayCell.className = 'border border-border-color rounded p-1 min-h-[100px] flex flex-col';
                 
                 const dayNumber = document.createElement('span');
-                const isToday = new Date(year, month, i).toDateString() === new Date().toDateString();
-                dayNumber.className = `text-xs ${isToday ? 'text-primary' : 'text-secondary'}`; 
+                dayNumber.className = `text-xs text-secondary`; 
                 dayNumber.textContent = i;
                 dayCell.appendChild(dayNumber);
 
                 const tasksContainer = document.createElement('div');
-                tasksContainer.className = 'flex-grow overflow-y-auto';
+                tasksContainer.className = 'flex-grow overflow-y-auto space-y-1';
 
                 const currentDate = new Date(year, month, i);
-                const tasksForDay = tasksForMonth.filter(task => {
-                    if (!task.inicioPrevisto || !task.terminoPrevisto) return false;
-                    const inicio = new Date(task.inicioPrevisto + 'T00:00:00');
-                    const termino = new Date(task.terminoPrevisto + 'T00:00:00');
-                    return currentDate >= inicio && currentDate <= termino;
-                });
+
+                // Renderizar Compras
+                if (showCompras) {
+                    const comprasForDay = allCompras.filter(task => {
+                        if (!task.inicioPrevisto || !task.terminoPrevisto) return false;
+                        const inicio = new Date(task.inicioPrevisto + 'T00:00:00');
+                        const termino = new Date(task.terminoPrevisto + 'T00:00:00');
+                        return currentDate >= inicio && currentDate <= termino;
+                    });
+
+                    comprasForDay.forEach(task => {
+                        const cliente = allClientes.find(c => c.id === task.clienteId);
+                        if (cliente) {
+                            const taskEl = document.createElement('div');
+                            const bgColor = generateColorFromString(cliente.nome);
+                            const textColor = getTextColorForBg(bgColor);
+                            taskEl.className = 'calendar-task';
+                            taskEl.style.backgroundColor = bgColor;
+                            taskEl.style.color = textColor;
+                            taskEl.style.borderColor = textColor === '#ffffff' ? 'transparent' : '#4a403a';
+                            taskEl.innerHTML = `<i class="fa-solid fa-cart-shopping fa-xs mr-1.5"></i><strong>${cliente.nome.split(' ')[0]}:</strong> ${task.servico}`;
+                            taskEl.title = `[Compra] ${cliente.nome} - ${task.servico}`;
+                            tasksContainer.appendChild(taskEl);
+                        }
+                    });
+                }
                 
-                tasksForDay.forEach(task => {
-                    const taskEl = document.createElement('div');
-                    const cliente = allClientes.find(c => c.id === task.clienteId);
-                    const bgColor = generateColorFromString(cliente?.nome || 'default');
-                    const textColor = getTextColorForBg(bgColor);
-                    taskEl.className = 'calendar-task';
-                    taskEl.style.backgroundColor = bgColor;
-                    taskEl.style.color = textColor;
-                    taskEl.style.borderColor = textColor === '#ffffff' ? 'transparent' : '#4a403a';
-                    taskEl.innerHTML = `<strong>${cliente ? cliente.nome.split(' ')[0] : '??'}:</strong> ${task.servico}`;
-                    taskEl.title = `${cliente ? cliente.nome : ''} - ${task.servico}: ${task.descricao || ''}`;
-                    tasksContainer.appendChild(taskEl);
-                });
+                // Renderizar Tarefas
+                if (showTarefas) {
+                    const tarefasForDay = allTarefas.filter(tarefa => {
+                        if (!tarefa.dataInicio || !tarefa.dataFim || tarefa.clienteId !== clienteId) return false;
+                        const inicio = new Date(tarefa.dataInicio + 'T00:00:00');
+                        const termino = new Date(tarefa.dataFim + 'T00:00:00');
+                        return currentDate >= inicio && currentDate <= termino;
+                    });
+                    
+                    tarefasForDay.forEach(task => {
+                         const cliente = allClientes.find(c => c.id === task.clienteId);
+                         const taskEl = document.createElement('div');
+                         const bgColor = generateColorFromString(cliente.nome);
+                         const textColor = getTextColorForBg(bgColor);
+                         
+                         taskEl.className = 'calendar-task';
+                         taskEl.style.backgroundColor = bgColor;
+                         taskEl.style.color = textColor;
+                         taskEl.style.borderColor = `1px solid ${textColor === '#ffffff' ? 'var(--text-primary)' : 'white'}`;
+
+                         taskEl.innerHTML = `<i class="fa-solid fa-list-check fa-xs mr-1.5"></i><strong>${cliente.nome.split(' ')[0]}:</strong> ${task.titulo}`;
+                         taskEl.title = `[Tarefa] ${cliente.nome} - ${task.titulo}`;
+                         tasksContainer.appendChild(taskEl);
+                    });
+                }
 
                 dayCell.appendChild(tasksContainer);
                 calBody.appendChild(dayCell);
@@ -3545,6 +3622,20 @@ const renderSubtarefaInput = (subtarefa = {}) => {
                     openModal('modal-tarefa');
                 }
             }
+        });
+
+        // Listeners para os filtros dos calendários do modal
+        document.getElementById('toggle-compras-semanal').addEventListener('change', () => {
+            if(clientModalCalendarState.clienteId) renderWeeklyCalendar(clientModalCalendarState.clienteId);
+        });
+        document.getElementById('toggle-tarefas-semanal').addEventListener('change', () => {
+            if(clientModalCalendarState.clienteId) renderWeeklyCalendar(clientModalCalendarState.clienteId);
+        });
+        document.getElementById('toggle-compras-mensal').addEventListener('change', () => {
+            renderMonthlyCalendar();
+        });
+        document.getElementById('toggle-tarefas-mensal').addEventListener('change', () => {
+            renderMonthlyCalendar();
         });
 
         // --- EVENT LISTENERS (MODALS, NAV, TABS) ---
